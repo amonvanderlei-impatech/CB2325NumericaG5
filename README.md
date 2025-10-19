@@ -1,0 +1,1 @@
+Biblioteca de cálculo numérico, contendo funcionalidades clássicas de análise numérica e recursos gráficos para visualização de resultados.
