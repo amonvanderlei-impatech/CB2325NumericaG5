@@ -1,6 +1,6 @@
 def media(dado): #recebe uma lista de inteiros e retorna a sua média
     if len(dado) == 0:
-        return KeyError
+        return 0
     else:
         soma = 0
 
@@ -10,7 +10,7 @@ def media(dado): #recebe uma lista de inteiros e retorna a sua média
         return soma/(len(dado))
 def regressão_linear(xizes,ypsilons):
     if len(xizes) != len(ypsilons):
-        return IndexError
+        raise KeyError(" A quantidade de abcissas deve ser igual à de ordenadas.")
     
 
     den_beta_chapeu =  -len(xizes)*(media(xizes)*media(xizes))
