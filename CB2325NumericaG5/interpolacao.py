@@ -1,6 +1,7 @@
 from sympy import symbols, simplify
 
 class PoliInterp:
+    '''Interpola os pontos dados utilizando o metodo de Lagrange e armazena o polinômio simplificado'''
 
     def __init__(self, dominio, imagem):
         self.x = symbols('x')
@@ -31,6 +32,10 @@ class PoliInterp:
 
 
 class IntLinear:
+    '''Cria retas que interpolam pontos dois a dois
+        e armazena elas em um dicionário interno dividindo
+         cada reta por intervalo'''
+
 
     def __init__(self, dominio, imagem):
         self.x = symbols('x')
@@ -67,7 +72,4 @@ class IntLinear:
 
         else:
             return self.eval((temp[0], temp[1]), t)
-
-
-
 
