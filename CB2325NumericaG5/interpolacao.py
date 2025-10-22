@@ -36,11 +36,15 @@ class PoliInterp:
         return f'{self.pol}'
 
     def __call__(self, t):
-        temp = self.pol.subs(self.x, t)
-        if int(temp)-temp == 0:
-            return temp
+        dom = sorted(self.dominio)
+        if t > dom[-1] or t < dom[0]:
+            return None
         else:
-            return f'{temp:.4f}'
+            temp = self.pol.subs(self.x, t)
+            if int(temp) - temp == 0:
+                return temp
+            else:
+                return f'{temp:.4f}'
 
 
 class IntLinear:
@@ -87,13 +91,15 @@ class IntLinear:
         # Lista dos x's
         temp = [i[0] for i in self.pares_ord]
 
-        for i in range(len(temp) - 1):
-            if temp[i] <= t <= temp[i + 1]:
-                return self.eval((temp[i], temp[i + 1]), t)
-
-        if t > temp[-1]:
-            return self.eval((temp[-2], temp[-1]), t)
+        if t>temp[-1] or t<temp[0]:
+            # Extrapolação
+            return None
 
         else:
-            return self.eval((temp[0], temp[1]), t)
+            for i in range(len(temp) - 1):
+                if temp[i] <= t <= temp[i + 1]:
+                    return self.eval((temp[i], temp[i + 1]), t)
+            return None
+
+
 
