@@ -5,30 +5,31 @@ Esse módulo fornece funções para calcular o erro absoluto e o erro relativo e
 """
 
 def erro_absoluto(valor_real:float,valor_aprox:float) -> float:
-    """Retorna o erro absoluto entre o valor real de um número e seu valor aproximado
+    """
+    Retorna o erro absoluto entre o valor real de um número e seu valor aproximado
     Calcula o erro absoluto entre dois valores de um mesmo número: seu valor real e seu valor
     aproximado. O erro absoluto é calculado por meio do módulo da diferença entre o valor real e o 
     valor aproximado.
     
     Args:
         valor_real (float): É o valor real (ou exato, caso seja) do número
-        valor_aprox (float): É o valor proximado do número
+        valor_aprox (float): É o valor aproximado do número
 
     Returns:
-        float: Resultado da cálculo do erro absoluto
+        float: Resultado do cálculo do erro absoluto
     """
     erro = abs(valor_real - valor_aprox)
     return erro
 
-def erro_relativo(valor_real, valor_aprox):
+def erro_relativo(valor_real: float, valor_aprox: float) -> float:
     """
-    Calcula o erro relativo entre dois valores.
+    Retorna o erro relativo entre o valor real de um número e seu valor aproximado.
     O erro relativo é o erro absoluto dividido pelo valor absoluto do valor real.
     Fórmula: E_r=|(valor_real-valor_aprox)/valor_real|
 
     Args:
         valor_real (float): O valor exato ou de referência. Deve ser diferente de zero.
-        valor_aprox (_type_): O valor obtido por medição ou aproximação.
+        valor_aprox (float): O valor obtido por medição ou aproximação.
         
     Returns:
         float: O erro relativo calculado.
@@ -44,5 +45,11 @@ def erro_relativo(valor_real, valor_aprox):
 
 if __name__=='__main__':
     # exemplos de uso, conforme solicitado
-    erro_rel=erro_relativo(3.141592, 3.14)
+    pi_real=3.141592
+    pi_aprox=3.14
+    erro_abs=erro_absoluto(pi_real, pi_aprox)
+    erro_rel=erro_relativo(pi_real, pi_aprox)
+    print(f'Valor real de pi: {pi_real}')
+    print(f'Valor aproximado de pi: {pi_aprox}')
+    print(f'Erro absoluto: {erro_abs:.7f}')
     print(f'Erro relativo: {erro_rel:.7f}')
