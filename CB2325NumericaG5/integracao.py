@@ -24,6 +24,9 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
     Raises:
         ValueError: Se o método for `"simpson"` e `n` for ímpar.
         ValueError: Se o argumento `metodo` não for `"trapezios"` nem `"simpson"`.
+        ValueError: Se `n` não for um inteiro não negativo.
+        TypeError: Se os limites de integração `a` e `b` não forem números reais.
+        TypeError: Se `funcao` não for uma função.
 
     Returns:
         float: Valor aproximado da integral definida de `funcao` no intervalo [a, b],
