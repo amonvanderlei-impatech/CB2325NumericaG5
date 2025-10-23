@@ -1,7 +1,17 @@
-from sympy import symbols, simplify
+from sympy import symbols, simplify, diff
 
 class PoliInterp:
-    '''Interpola os pontos dados utilizando o metodo de Lagrange e armazena o polinômio simplificado'''
+    '''Interpola os pontos dados utilizando o metodo de Lagrange e armazena o polinômio simplificado
+    Args:
+        dominio (list): Lista de pontos do domínio.
+        imagem (list): Lista de pontos da imagem.
+
+    Raises:
+        ValueError: Se o domínio possuir pontos iguais.
+
+    Returns:
+        representação do polinômio interpolador,
+        float: valor do polinômio num ponto específico.'''
 
     @staticmethod
     def dom_valido(dominio):
@@ -40,6 +50,7 @@ class PoliInterp:
         if t > dom[-1] or t < dom[0]:
             return None
         else:
+            # MELHORAR A VERIFICAÇÃO (PODE FALHAR)
             temp = self.pol.subs(self.x, t)
             if int(temp) - temp == 0:
                 return temp
@@ -96,6 +107,7 @@ class IntLinear:
             return None
 
         else:
+            # COLOCAR UMA VERIFICAÇÃO COMO NA CLASSE PoliInter
             for i in range(len(temp) - 1):
                 if temp[i] <= t <= temp[i + 1]:
                     return self.eval((temp[i], temp[i + 1]), t)
@@ -103,3 +115,52 @@ class IntLinear:
 
 
 
+class PolinomioHermite:
+    def __init__(self, dominio, imagem, imagem_derivada):
+        self.x = symbols('x')
+
+        if len(dominio) != len(imagem) or len(dominio) != len(imagem_derivada) or len(imagem) != len(imagem_derivada):
+            raise ValueError('Dados inválidos')
+
+        self.dominio = dominio
+        self.imagem = imagem
+        self.imagem_derivada = imagem_derivada
+
+        if len(set(self.dominio)) != len(self.dominio):
+            raise ValueError('Dados inválidos')
+
+        # Dicionário com os coeficientes de Lagrange
+        self.coef_lagrange = {}
+        for j in range(len(imagem)):
+            prod = 1
+            for i in range(len(dominio)):
+                if j != i:
+                    prod *= (self.x - dominio[i]) / (dominio[j] - dominio[i])
+            self.coef_lagrange[j] = (simplify(prod), simplify(prod.diff(self.x)))
+
+        # Encontra o polinômio de hermite
+        self.pol = self.hermite()
+
+
+    def __repr__(self):
+        return f'{self.pol}'
+
+    def H_j(self, j):
+        soma = (1-2*(self.x - self.dominio[j])*(self.coef_lagrange[j][1].subs(self.x, self.dominio[j])))*(self.coef_lagrange[j][0])**2
+        return simplify(soma)
+
+    def h_j(self, j):
+        soma = (self.x-self.dominio[j])*(self.coef_lagrange[j][0])**2
+        return simplify(soma)
+
+    def hermite(self):
+        pol = 0
+        for j in range(len(self.dominio)):
+            pol += self.imagem[j]*self.H_j(j) + self.imagem_derivada[j]*self.h_j(j)
+        return simplify(pol)
+
+    def __call__(self, t):
+        if min(self.dominio) <= t <= max(self.dominio):
+            return self.pol.subs(self.x, t)
+        else:
+            raise ValueError('Extrapolação')
