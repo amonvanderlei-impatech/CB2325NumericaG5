@@ -138,11 +138,16 @@ class PoliHermite:
     """Interpola utilizando o metodo de Hermite (interpola nos pontos dados e na primeira derivada)"""
 
     def __init__(self, dominio, imagem, imagem_derivada):
-        self.x = symbols('x')
+        if not isinstance(dominio, list) or not isinstance(imagem, list) or not isinstance(imagem_derivada, list):
+            raise ValueError('Argumentos inválidos')
 
         if len(dominio) != len(imagem) or len(dominio) != len(imagem_derivada) or len(imagem) != len(imagem_derivada):
             raise ValueError('Dados inválidos')
 
+        if len(set(dominio)) != len(dominio) or len(dominio) < 2:
+            raise ValueError('Domínio inválido')
+
+        self.x = symbols('x')
         self.dominio = dominio
         self.imagem = imagem
         self.imagem_derivada = imagem_derivada
@@ -160,25 +165,25 @@ class PoliHermite:
             self.coef_lagrange[j] = (simplify(prod), simplify(prod.diff(self.x)))
 
         # Encontra o polinômio de hermite
-        self.pol = self.hermite()
+        self.pol = self._hermite()
 
 
     def __repr__(self):
         # Retorna a representação do polinômio simplificado
         return f'{self.pol}'
 
-    def H_j(self, j):
+    def _hx_j(self, j):
         soma = (1-2*(self.x - self.dominio[j])*(self.coef_lagrange[j][1].subs(self.x, self.dominio[j])))*(self.coef_lagrange[j][0])**2
         return simplify(soma)
 
-    def h_j(self, j):
+    def _hy_j(self, j):
         soma = (self.x-self.dominio[j])*(self.coef_lagrange[j][0])**2
         return simplify(soma)
 
-    def hermite(self):
+    def _hermite(self):
         pol = 0
         for j in range(len(self.dominio)):
-            pol += self.imagem[j]*self.H_j(j) + self.imagem_derivada[j]*self.h_j(j)
+            pol += self.imagem[j]*self._hx_j(j) + self.imagem_derivada[j]*self._hy_j(j)
         return simplify(pol)
 
     def __call__(self, t):
