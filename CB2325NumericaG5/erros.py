@@ -19,7 +19,15 @@ def erro_absoluto(valor_real: float, valor_aprox: float, casas_decimais: int = 6
 
     Returns:
         float: Resultado do cálculo do erro absoluto
+        
+    Raises:
+        TypeError: se o `valor_real` e o `valor_aprox` não forem float ou int
+        ValueError: se `casas_decimais` não for um inteiro não negativo
     """
+    if not isinstance(valor_aprox, (int, float)) or not isinstance(valor_real, (int, float)):
+        raise TypeError("O valor real e o valor aproximado devem ser números reais.")
+    if not isinstance(casas_decimais, int) or casas_decimais<0:
+        raise ValueError("O número de casas decimais deve ser um inteiro não-negativo.")
     erro = abs(valor_real - valor_aprox)
     return round(erro, casas_decimais)
 
@@ -40,10 +48,16 @@ def erro_relativo(valor_real: float, valor_aprox: float, casas_decimais: int = 6
         especificado em `casas_decimais`.
         
     Raises:
-        ValueError: Se o valor_real for zero, o que causaria divisão por zero.
+        ValueError: Se o `valor_real` for zero, o que causaria divisão por zero.
+        TypeError: se o `valor_real` e o `valor_aprox` não forem float ou int
+        ValueError: se `casas_decimais` não for um inteiro não negativo
     """
     
     if valor_real==0:
         raise ValueError("O valor real não pode ser zero para o cálculo do erro relativo.")
+    if not isinstance(valor_aprox, (int, float)) or not isinstance(valor_real, (int, float)):
+        raise TypeError("O valor real e o valor aproximado devem ser números reais.")
+    if not isinstance(casas_decimais, int) or casas_decimais<0:
+        raise ValueError("O número de casas decimais deve ser um inteiro não-negativo.")
     
     return round(abs((valor_real-valor_aprox)/valor_real), casas_decimais)
