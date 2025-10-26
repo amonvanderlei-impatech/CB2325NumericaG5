@@ -1,9 +1,8 @@
-from typing import Callable
+from typing import Callable, Union
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-def plot_parabola(x0, x1, x2, y0, y1, y2):
+def _plot_parabola(x0, x1, x2, y0, y1, y2):
     """
     Gera a representação gráfica de uma parábola que passa por (x0,y0), (x1,y1) e (x2,y2) no intervalo [x0,x2],
     preenchendo a área entre a curva e o eixo x.
@@ -30,9 +29,15 @@ def plot_parabola(x0, x1, x2, y0, y1, y2):
     plt.plot(x_para, y_para, 'r--', alpha=0.7, linewidth=1)
     plt.fill_between(x_para, 0, y_para, alpha=0.2, color='red')
 
-
-
-def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox: int = 4, metodo = "simpson", plot = True) -> float:
+def integral(
+        funcao: Callable[[Union[float, np.ndarray]], Union[float, np.ndarray]],
+        a: float,
+        b: float,
+        n: int,
+        aprox: int = 4,
+        metodo = "simpson",
+        plot = True
+    ) -> float:
     """
     Calcula numericamente a integral definida de uma função no intervalo [a, b],
     utilizando o método dos trapézios ou a regra de Simpson (1/3) e gera uma representação gráfica dessa integral.
@@ -46,13 +51,13 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
     subdivisões — desde que `n` seja par.
 
     Args:
-        funcao (Callable[[float], float]): Função a ser integrada.
+        funcao (Callable[[Union[float, np.ndarray]], Union[float, np.ndarray]]): Função a ser integrada.
         a (float): Limite inferior de integração.
         b (float): Limite superior de integração.
         n (int): Número de subdivisões (intervalos) utilizados na aproximação. Para o método de Simpson, `n` deve ser par.
         aprox (int, optional): Número de casas decimais do resultado. O padrão é 4.
         metodo (str, optional): Método de integração numérica a ser utilizado: `"trapezios"` ou `"simpson"`. O padrão é `"simpson"`.
-        plot (bool, optional): Se True, exibe a representação gráfica da integral. O padrão é True
+        plot (bool, optional): Se True, exibe a representação gráfica da integral. O padrão é True.
         
     Raises:
         ValueError: Se o método for `"simpson"` e `n` for ímpar.
@@ -75,6 +80,7 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
     if metodo not in ("trapezios", "simpson"):
         raise ValueError("Método inválido! Use 'trapezios' ou 'simpson'.")
     
+    funcao_vec = np.vectorize(funcao)
 
     # Cálculo da integral
     dx = (b - a) / n
@@ -84,7 +90,7 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
         for i in range(n):
             x1 = a + i * dx
             x2 = a + (i + 1) * dx
-            soma += (funcao(x1) + funcao(x2)) * dx / 2
+            soma += (funcao_vec(x1) + funcao_vec(x2)) * dx / 2
                 
     else: # metodo == "simpson"
         if n % 2 != 0:
@@ -92,21 +98,17 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
         for i in range(n + 1):
             x = a + i * dx
             if i == 0 or i == n:
-                soma += funcao(x)
+                soma += funcao_vec(x)
             elif i % 2 == 1:
-                soma += 4 * funcao(x)
+                soma += 4 * funcao_vec(x)
             else:
-                soma += 2 * funcao(x)
+                soma += 2 * funcao_vec(x)
                 
         soma *= dx / 3
 
-
-
-
-    if plot == True:
-
+    if plot:
         x = np.linspace(a-0.11*(b-a), b + 0.11*(b-a), 100)
-        y = funcao(x)
+        y = funcao_vec(x)
 
         plt.figure(figsize=(10, 6))
 
@@ -133,11 +135,9 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
         plt.axvline(x=0, color='black', linewidth=1.5, linestyle='-')
 
         # Limites da integração
-        plt.plot([a, a], [0, funcao(a)], color='black', linewidth=1.5, linestyle='-')
-        plt.plot([b, b], [0, funcao(b)], color='black', linewidth=1.5, linestyle='-')
+        plt.plot([a, a], [0, funcao_vec(a)], color='black', linewidth=1.5, linestyle='-')
+        plt.plot([b, b], [0, funcao_vec(b)], color='black', linewidth=1.5, linestyle='-')
         
-
-
         # Plot da integral
         if metodo == "trapezios":
             for i in range(n):
@@ -145,22 +145,20 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
                 x_i2 = a + (i + 1) * dx
         
                 x_trap = [x_i, x_i, x_i2, x_i2, x_i]  # Pontos do trápezio (inf esquerdo, sup esquerdo, sup direito, inf direito)
-                y_trap = [0, funcao(x_i), funcao(x_i2), 0, 0] # 5º ponto para fechar o polígono
+                y_trap = [0, funcao_vec(x_i), funcao_vec(x_i2), 0, 0] # 5º ponto para fechar o polígono
         
                 plt.fill(x_trap, y_trap, alpha=0.3, color='orange', edgecolor='black')
-
 
         else: # metodo == "simpson"
             for i in range(0,n,2):
                 x_i = a + i * dx
                 x_i2 = a + (i + 1) * dx
                 x_i3 = a + (i + 2) * dx
-                y_i, y_2, y_3 = funcao(x_i), funcao(x_i2), funcao(x_i3)
+                y_i, y_2, y_3 = funcao_vec(x_i), funcao_vec(x_i2), funcao_vec(x_i3)
 
-                plot_parabola(x_i, x_i2, x_i3, y_i, y_2, y_3)
+                _plot_parabola(x_i, x_i2, x_i3, y_i, y_2, y_3)
 
 
         plt.show()
 
     return round(soma, aprox)
-
