@@ -61,3 +61,35 @@ def erro_relativo(valor_real: float, valor_aprox: float, casas_decimais: int = 6
         raise ValueError("O número de casas decimais deve ser um inteiro não-negativo.")
     
     return round(abs((valor_real-valor_aprox)/valor_real), casas_decimais)
+
+def soma_de_Kahan(lista_de_valores):
+    """
+    O algoritmo de soma de Kahan é um método de análise numérica que
+    visa minimizar o erro numérico (erro de arredondamento) ao somar 
+    uma sequência de números de ponto flutuante de precisão finita. 
+    Se o usuário decidir somar uma lista de números que possua valores 
+    muito grandes e valores muito pequenos, como a precisão dos computadores
+    é limitida, os dígitos de baixa ordem (menos significativos) do número 
+    pequeno podem ser perdidos durante a operação de adição devido ao 
+    arrendondamento. Para minimizar essa falha, o algoritmo da soma de Kahan
+    mantém uma variável de "compensação" durante a realização da soma, a qual
+    acumula os dígitos de baixa ordem "perdidos" a cada etapa da operação. A
+    cada nova etapa de adição, esse erro é usado para "ajustar" o próximo número
+    que será somado, compensando a perda de precisão do anterior.
+
+    Args:
+        lista_de_valores: A lista dos valores de ponto fluante que se deseja somar
+
+    Returns:
+        Retorna a soma compensada dos números de ponto flutuante fornecidos
+    """
+    soma_total = 0.0 # a soma corrente 
+    compensação = 0.0 # a variável que será a compensação
+    
+    for valor in lista_de_valores: 
+        v = valor - compensação # a cada valor, desconta-se a compensação
+        soma_auxiliar = soma_total + v # a soma auxiliar pega a soma total corrente e adicona o valor após a compensação
+        compensação = (soma_auxiliar - soma_total) - v # a compensação é atualizada 
+        soma_total = soma_auxiliar # a soma total corrente é atualizada com o valor da soma armazenada na variável auxiliar
+        
+    return soma_total 
