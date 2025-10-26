@@ -1,9 +1,41 @@
 from typing import Callable
+import matplotlib.pyplot as plt
+import numpy as np
 
-def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox: int = 4, metodo = "simpson") -> float:
+
+def plot_parabola(x0, x1, x2, y0, y1, y2):
+    """
+    Gera a representação gráfica de uma parábola que passa por (x0,y0), (x1,y1) e (x2,y2) no intervalo [x0,x2],
+    preenchendo a área entre a curva e o eixo x.
+
+    Args:
+        x0: x do primeiro ponto da parábola
+        x1: x do segundo ponto da parábola
+        x2: x do terceiro ponto da parábola
+        y0: y do primeiro ponto da parábola
+        y1: y do segundo ponto da parábola
+        y2: y do terceiro ponto da parábola
+    """
+    # Encontrando coeficientes a, b, c da parábola y = ax² + bx + c:
+    A = np.array([[x0**2, x0, 1],
+                  [x1**2, x1, 1], 
+                  [x2**2, x2, 1]])
+    b = np.array([y0, y1, y2])
+    a, b, c = np.linalg.solve(A, b)
+    
+    # Pontos da parábola
+    x_para = np.linspace(x0, x2, 50)
+    y_para = a*x_para**2 + b*x_para + c
+    
+    plt.plot(x_para, y_para, 'r--', alpha=0.7, linewidth=1)
+    plt.fill_between(x_para, 0, y_para, alpha=0.2, color='red')
+
+
+
+def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox: int = 4, metodo = "simpson", plot = True) -> float:
     """
     Calcula numericamente a integral definida de uma função no intervalo [a, b],
-    utilizando o método dos trapézios ou a regra de Simpson (1/3).
+    utilizando o método dos trapézios ou a regra de Simpson (1/3) e gera uma representação gráfica dessa integral.
 
     O método dos trapézios aproxima a área sob a curva dividindo o intervalo em
     `n` subintervalos igualmente espaçados e somando as áreas dos trapézios formados
@@ -20,6 +52,7 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
         n (int): Número de subdivisões (intervalos) utilizados na aproximação. Para o método de Simpson, `n` deve ser par.
         aprox (int, optional): Número de casas decimais do resultado. O padrão é 4.
         metodo (str, optional): Método de integração numérica a ser utilizado: `"trapezios"` ou `"simpson"`. O padrão é `"simpson"`.
+        plot (bool, optional): Se True, exibe a representação gráfica da integral. O padrão é True
         
     Raises:
         ValueError: Se o método for `"simpson"` e `n` for ímpar.
@@ -42,6 +75,7 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
     if metodo not in ("trapezios", "simpson"):
         raise ValueError("Método inválido! Use 'trapezios' ou 'simpson'.")
     
+
     # Cálculo da integral
     dx = (b - a) / n
     soma = 0.0
@@ -66,4 +100,67 @@ def integral(funcao: Callable[[float], float], a: float, b: float, n: int, aprox
                 
         soma *= dx / 3
 
+
+
+
+    if plot == True:
+
+        x = np.linspace(a-0.11*(b-a), b + 0.11*(b-a), 100)
+        y = funcao(x)
+
+        plt.figure(figsize=(10, 6))
+
+        plt.plot(x, y, label='f(x)', linewidth=2, linestyle='-', color='black')
+
+        plt.title("Integração de f(x)", fontsize=16, fontweight='bold')
+        plt.xlabel("x", fontsize=12)
+        plt.ylabel("y", fontsize=12)
+        plt.grid(True, alpha=0.3)
+        plt.legend(fontsize=12)
+
+        # Garantia do eixo x (y=0) estar sempre no gráfico
+        y_min = min(np.min(y), 0)
+        y_max = max(np.max(y), 0) 
+
+        # Margem para visualização total do gráfico
+        margem_y = 0.1 * (y_max - y_min)
+        margem_x = 0.1 * (b - a)
+        plt.ylim(y_min - margem_y, y_max + margem_y)
+        plt.xlim(a-margem_x, b + margem_x)
+
+        #Eixos x e y
+        plt.axhline(y=0, color='black', linewidth=1.5, linestyle='-')
+        plt.axvline(x=0, color='black', linewidth=1.5, linestyle='-')
+
+        # Limites da integração
+        plt.plot([a, a], [0, funcao(a)], color='black', linewidth=1.5, linestyle='-')
+        plt.plot([b, b], [0, funcao(b)], color='black', linewidth=1.5, linestyle='-')
+        
+
+
+        # Plot da integral
+        if metodo == "trapezios":
+            for i in range(n):
+                x_i = a + i * dx
+                x_i2 = a + (i + 1) * dx
+        
+                x_trap = [x_i, x_i, x_i2, x_i2, x_i]  # Pontos do trápezio (inf esquerdo, sup esquerdo, sup direito, inf direito)
+                y_trap = [0, funcao(x_i), funcao(x_i2), 0, 0] # 5º ponto para fechar o polígono
+        
+                plt.fill(x_trap, y_trap, alpha=0.3, color='orange', edgecolor='black')
+
+
+        else: # metodo == "simpson"
+            for i in range(0,n,2):
+                x_i = a + i * dx
+                x_i2 = a + (i + 1) * dx
+                x_i3 = a + (i + 2) * dx
+                y_i, y_2, y_3 = funcao(x_i), funcao(x_i2), funcao(x_i3)
+
+                plot_parabola(x_i, x_i2, x_i3, y_i, y_2, y_3)
+
+
+        plt.show()
+
     return round(soma, aprox)
+
