@@ -119,3 +119,15 @@ def aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio):
                 contador += row1[i]*row2[i]
 
         return contador
+    
+    matriz_produto_xiszes = [[produto_de_rows(matriz_xiszes[i],matriz_xiszes[ii]) for i in range(len(matriz_xiszes))] for ii in range(len(matriz_xiszes[0])+1 - len(xiszes)+grau_do_polinomio)] #Menos um ou menos 2? Talvez 1 - (quantidade de dados - grau do polinomio)
+
+
+    #A matriz que define o sistema de equações que deve ser resolvido. A outra é:
+
+    vetor_ypsilons_do_sistema = [produto_de_rows(ypsilons,matriz_xiszes[i]) for i in range(len(matriz_xiszes))]
+
+
+    vetor_solucao = gauss_jordan(matriz_produto_xiszes,vetor_ypsilons_do_sistema)
+
+    return vetor_solucao
