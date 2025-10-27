@@ -93,9 +93,12 @@ def soma_de_kahan(lista_de_valores: List[float]) -> float:
     compensação = 0.0 # a variável que será a compensação
     
     for valor in lista_de_valores: 
+        if not isinstance(valor, float): # se o valor fornecido não for um float, a operação não é realizada
+            continue 
+        
         v = valor - compensação # a cada valor, desconta-se a compensação
         soma_auxiliar = soma_total + v # a soma auxiliar pega a soma total corrente e adicona o valor após a compensação
         compensação = (soma_auxiliar - soma_total) - v # a compensação é atualizada 
         soma_total = soma_auxiliar # a soma total corrente é atualizada com o valor da soma armazenada na variável auxiliar
-        
+    
     return soma_total 
