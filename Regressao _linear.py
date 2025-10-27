@@ -88,3 +88,34 @@ def gauss_jordan(A, b, tol=1e-12):
     # Extrai a solução (última coluna)
     x = [A[i][-1] for i in range(n)]
     return x
+
+def aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio):
+
+    quantidade_de_pontos = len(lista_de_coordenadas)
+
+    if quantidade_de_pontos < grau_do_polinomio: #Condição necessária para que um polinômio seja encontrado.
+
+        raise KeyError("A quantidade de dados deve ser maior ou igual ao grau do polinômio desejado.")
+    #(
+    xiszes = [e for e,ee in lista_de_coordenadas]
+
+    ypsilons = [ee for e,ee in lista_de_coordenadas]
+
+    # )Isola cada conjunto de dados de cada coordenada num vetor.
+
+    matriz_xiszes = [[e**i for e in xiszes] for i in range(grau_do_polinomio+1)]
+
+    #Feita a matriz de cada xis nos devidos graus para que o polinômio seja encontrado.
+    def produto_de_rows(row1,row2): #Retorna o elemento da matriz resultado, quando se trata do produto de matrizes.
+
+        if len(row1) == len(row2):
+
+            contador = 0
+
+            for i in range(len(row1)):
+
+
+
+                contador += row1[i]*row2[i]
+
+        return contador
