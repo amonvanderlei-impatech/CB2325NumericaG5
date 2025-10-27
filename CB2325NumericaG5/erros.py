@@ -3,6 +3,8 @@ Módulo para cálculo de erros numéricos.
 
 Esse módulo fornece funções para calcular o erro absoluto e o erro relativo entre um valor real e um valor aproximado.
 """
+from typing import List
+
 
 def erro_absoluto(valor_real: float, valor_aprox: float, casas_decimais: int = 6) -> float:
     """
@@ -62,7 +64,7 @@ def erro_relativo(valor_real: float, valor_aprox: float, casas_decimais: int = 6
     
     return round(abs((valor_real-valor_aprox)/valor_real), casas_decimais)
 
-def soma_de_Kahan(lista_de_valores):
+def soma_de_kahan(lista_de_valores: List[float]) -> float:
     """
     O algoritmo de soma de Kahan é um método de análise numérica que
     visa minimizar o erro numérico (erro de arredondamento) ao somar 
@@ -78,10 +80,10 @@ def soma_de_Kahan(lista_de_valores):
     que será somado, compensando a perda de precisão do anterior.
 
     Args:
-        lista_de_valores: A lista dos valores de ponto fluante que se deseja somar
+        lista_de_valores (List[float]): A lista dos valores de ponto fluante que se deseja somar
 
     Returns:
-        Retorna a soma compensada dos números de ponto flutuante fornecidos
+        float: Retorna a soma compensada dos números de ponto flutuante fornecidos
     """
     soma_total = 0.0 # a soma corrente 
     compensação = 0.0 # a variável que será a compensação
