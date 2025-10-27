@@ -131,3 +131,36 @@ def aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio):
     vetor_solucao = gauss_jordan(matriz_produto_xiszes,vetor_ypsilons_do_sistema)
 
     return vetor_solucao
+
+
+
+def txt_aproximacao_polinomial(lista_de_coordenadas,grau_do_polinômio):
+
+    k = str()
+
+    a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinômio)
+
+    for i in range(len(a)):
+
+
+        if a[len(a)-1-i] > 0:
+
+
+            k+=f"+ {a[len(a)-1-i]:.3}*x^{len(a)-i-1} "
+
+        elif a[len(a)-1-i] == 0:
+
+            continue
+
+        else:
+
+
+            k+=f" {a[len(a)-1-i]:.3}*x^{len(a)-i-1} "
+
+    return k
+
+bolha = [(1,2),(-1,-1),(0,8),(2,2),(5,8),(-21,-44),(-17,-7),(13,4),(35,53),(-3,2),(9,-9),(.12,-.04),(.09,-.009)]
+a = aproximacao_polinomial(bolha,3)
+print(a)
+a = txt_aproximacao_polinomial(bolha,3)
+print(a)
