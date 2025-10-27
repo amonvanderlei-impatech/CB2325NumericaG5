@@ -85,6 +85,10 @@ def soma_de_kahan(lista_de_valores: List[float]) -> float:
     Returns:
         float: Retorna a soma compensada dos números de ponto flutuante fornecidos
     """
+    
+    if not isinstance(lista_de_valores, list):
+        raise TypeError ("a lista de valores fornecida deve ser uma lista")
+    
     soma_total = 0.0 # a soma corrente 
     compensação = 0.0 # a variável que será a compensação
     
