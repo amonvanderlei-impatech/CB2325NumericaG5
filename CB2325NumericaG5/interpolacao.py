@@ -1,4 +1,6 @@
-from sympy import symbols, simplify, Number
+from sympy import symbols, simplify, lambdify, Number
+from matplotlib.pyplot import show, subplots
+from numpy import linspace
 
 
 
@@ -61,9 +63,6 @@ class PoliInterp:
             return float(temp)
 
         return None
-
-
-
 
 
 
@@ -196,3 +195,53 @@ class PoliHermite:
             return None
         else:
             raise ValueError('Extrapolação')
+        
+        
+        
+
+def grafico(polinomio):
+    """Esboça o gráfico da classe PoliInterp
+
+    Argumentos:
+        polinomio (PoliInterp): Polinomio a ser esboçado"""
+    
+    x, t = symbols('x t')
+    y = polinomio.pol
+    y = lambdify(x, y, "numpy")
+    
+    x = t
+    x = lambdify(t, x, "numpy")
+    
+    xmin, xmax, ymin, ymax = polinomio.dominio[0], polinomio.dominio[0], polinomio.imagem[0], polinomio.imagem[0]
+    for i in polinomio.dominio:
+        if i < xmin:
+            xmin = i
+        if i > xmax:
+            xmax = i
+    for j in polinomio.imagem:
+        if j < ymin:
+            ymin = j
+        if j > ymax:
+            ymax = j
+    
+    v = linspace(xmin, xmax, 300)
+    x = x(v)
+    y = y(v)
+    
+    mi, ma = min(xmin, ymin), max(xmax, ymax)
+    
+    fig, ax = subplots()
+    ax.set_aspect("equal")
+    ax.set_xlim(mi-1, ma+1)
+    ax.set_ylim(mi-1, ma+1)
+    
+    ax.plot(x, y)
+    
+    for i in range(len(polinomio.dominio)):
+        x, y = polinomio.dominio[i], polinomio.imagem[i]
+        ax.plot(x, y, "o")
+    
+    show()
+
+polinomio = PoliInterp([-2, -1, 0, 1, 2], [0, -1, 2, -3, 4])
+grafico(polinomio)
