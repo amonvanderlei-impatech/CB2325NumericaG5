@@ -2,10 +2,50 @@ from sympy import symbols, simplify, lambdify, Number
 from matplotlib.pyplot import show, subplots
 from numpy import linspace
 
+class Interpolacao:
+    def __init__(self, dominio, imagem, imagem_derivada = None):
+        if imagem_derivada is None:
+            # Garantimos que o domínio e a imagem são listas de pontos
+            if not isinstance(dominio, list) or not isinstance(imagem, list):
+                raise ValueError('Argumentos inválidos')
+
+            # Garantimos que o domínio e a imagem possuem a mesma quantidade de pontos
+            if len(dominio) != len(imagem):
+                raise ValueError('Dados inválidos')
+
+            # Garantimos que o domínio não possui pontos repetidos
+            if len(set(dominio)) != len(dominio) or len(dominio) < 2:
+                raise ValueError('Domínio inválido')
+
+        else:
+            if not isinstance(dominio, list) or not isinstance(imagem, list) or not isinstance(imagem_derivada, list):
+                raise ValueError('Argumentos inválidos')
+
+            if len(dominio) != len(imagem) or len(dominio) != len(imagem_derivada) or len(imagem) != len(
+                    imagem_derivada):
+                raise ValueError('Dados inválidos')
+
+            if len(set(dominio)) != len(dominio) or len(dominio) < 2:
+                raise ValueError('Domínio inválido')
+
+            self.imagem_derivada = imagem_derivada
+
+            if len(set(dominio)) != len(dominio):
+                raise ValueError('Dados inválidos')
+
+        self.x = symbols('x')
+        self.dominio = dominio
+        self.imagem = imagem
 
 
+    def __repr__(self):
+        raise NotImplementedError
 
-class PoliInterp:
+    def __call__(self, t):
+        raise NotImplementedError
+
+
+class PoliInterp(Interpolacao):
     """Interpola os pontos dados utilizando o metodo de Lagrange e armazena o polinômio simplificado
     Args:
         dominio (list): Lista de pontos do domínio.
@@ -19,21 +59,7 @@ class PoliInterp:
         float: valor do polinômio num ponto específico."""
 
     def __init__(self, dominio, imagem):
-        # Garantimos que o domínio e a imagem são listas de pontos
-        if not isinstance(dominio, list) or not isinstance(imagem, list):
-            raise ValueError('Argumentos inválidos')
-
-        # Garantimos que o domínio e a imagem possuem a mesma quantidade de pontos
-        if len(dominio) != len(imagem):
-            raise ValueError('Dados inválidos')
-
-        # Garantimos que o domínio não possui pontos repetidos
-        if len(set(dominio)) != len(dominio) or len(dominio) < 2:
-            raise ValueError('Domínio inválido')
-
-        self.x = symbols('x')
-        self.dominio = dominio
-        self.imagem = imagem
+        super().__init__(dominio, imagem)
 
         # Metodo de Lagrange
         soma = 0
@@ -53,10 +79,9 @@ class PoliInterp:
     def __call__(self, t):
         # Previne extrapolação (valores fora do intervalo do domínio não são bem aproximados)
         if t < min(self.dominio) or t > max(self.dominio):
-            return None
+            raise ValueError('Extrapolação')
 
         temp = self.pol.subs(self.x, t)
-
         if isinstance(temp, Number):
             if temp.is_integer:
                 return int(temp)
@@ -65,28 +90,13 @@ class PoliInterp:
         return None
 
 
-
-
-
-class InterpLinear:
+class InterpLinear(Interpolacao):
     """Cria retas que interpolam pontos dois a dois
         e armazena elas em um dicionário interno dividindo
          cada reta por intervalo"""
 
     def __init__(self, dominio, imagem):
-        # Garantimos que o domínio e a imagem são listas de pontos
-        if not isinstance(dominio, list) or not isinstance(imagem, list):
-            raise ValueError('Argumentos inválidos')
-
-        # Garantimos que o domínio e a imagem possuem a mesma quantidade de pontos
-        if len(dominio) != len(imagem):
-            raise ValueError('Dados inválidos')
-
-        # Garantimos que o domínio não possui pontos repetidos
-        if len(set(dominio)) != len(dominio) or len(dominio) < 2:
-            raise ValueError('Domínio inválido')
-
-        self.x = symbols('x')
+        super().__init__(dominio, imagem)
 
         self.pares_ord = []
         for i, e in zip(dominio, imagem):
@@ -119,7 +129,7 @@ class InterpLinear:
 
         if t>temp[-1] or t<temp[0]:
             # Extrapolação
-            return None
+            raise ValueError('Extrapolação')
 
         for i in range(len(temp) - 1):
             if temp[i] <= t <= temp[i + 1]:
@@ -129,30 +139,11 @@ class InterpLinear:
 
 
 
-
-
-
-
-class PoliHermite:
+class PoliHermite(Interpolacao):
     """Interpola utilizando o metodo de Hermite (interpola nos pontos dados e na primeira derivada)"""
 
     def __init__(self, dominio, imagem, imagem_derivada):
-        if not isinstance(dominio, list) or not isinstance(imagem, list) or not isinstance(imagem_derivada, list):
-            raise ValueError('Argumentos inválidos')
-
-        if len(dominio) != len(imagem) or len(dominio) != len(imagem_derivada) or len(imagem) != len(imagem_derivada):
-            raise ValueError('Dados inválidos')
-
-        if len(set(dominio)) != len(dominio) or len(dominio) < 2:
-            raise ValueError('Domínio inválido')
-
-        self.x = symbols('x')
-        self.dominio = dominio
-        self.imagem = imagem
-        self.imagem_derivada = imagem_derivada
-
-        if len(set(self.dominio)) != len(self.dominio):
-            raise ValueError('Dados inválidos')
+        super().__init__(dominio, imagem, imagem_derivada)
 
         # Dicionário com os coeficientes de Lagrange
         self.coef_lagrange = {}
