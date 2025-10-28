@@ -194,43 +194,44 @@ def grafico(polinomio):
     """Esboça o gráfico da classe PoliInterp
 
     Argumentos:
-        polinomio (PoliInterp): Polinomio a ser esboçado"""
+        polinomio (PoliInterp): Polinomio a ser esboçado
+    """
+
+    x_simb, t = symbols('x t')
+    y_expr = polinomio.pol
+    y_lamb = lambdify(x_simb, y_expr, "numpy")
     
-    x, t = symbols('x t')
-    y = polinomio.pol
-    y = lambdify(x, y, "numpy")
-    
-    x = t
-    x = lambdify(t, x, "numpy")
+    x_expr = t
+    x_lamb = lambdify(t, x_expr, "numpy")
     
     xmin, xmax, ymin, ymax = polinomio.dominio[0], polinomio.dominio[0], polinomio.imagem[0], polinomio.imagem[0]
-    for i in polinomio.dominio:
-        if i < xmin:
-            xmin = i
-        if i > xmax:
-            xmax = i
-    for j in polinomio.imagem:
-        if j < ymin:
-            ymin = j
-        if j > ymax:
-            ymax = j
+    for x in polinomio.dominio:
+        if x < xmin:
+            xmin = x
+        if x > xmax:
+            xmax = x
+    for y in polinomio.imagem:
+        if y < ymin:
+            ymin = y
+        if y > ymax:
+            ymax = y
     
-    v = linspace(xmin, xmax, 300)
-    x = x(v)
-    y = y(v)
+    f_vals = linspace(xmin, xmax, 100)
+    x_func = x_lamb(f_vals)
+    y_func = y_lamb(f_vals)
     
-    mi, ma = min(xmin, ymin), max(xmax, ymax)
+    mini, maxi = min(xmin, ymin), max(xmax, ymax)
     
-    fig, ax = subplots()
+    f, ax = subplots()
     ax.set_aspect("equal")
-    ax.set_xlim(mi-1, ma+1)
-    ax.set_ylim(mi-1, ma+1)
+    ax.set_xlim(mini-1, maxi+1)
+    ax.set_ylim(mini-1, maxi+1)
     
-    ax.plot(x, y)
+    ax.plot(x_func, y_func)
     
     for i in range(len(polinomio.dominio)):
-        x, y = polinomio.dominio[i], polinomio.imagem[i]
-        ax.plot(x, y, "o")
+        x_ponto, y_ponto = polinomio.dominio[i], polinomio.imagem[i]
+        ax.plot(x_ponto, y_ponto, "o")
     
     show()
 
