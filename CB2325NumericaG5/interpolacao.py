@@ -1,4 +1,7 @@
-from sympy import symbols, simplify, Number
+from sympy import symbols, simplify, Number, latex
+
+
+
 
 class Interpolacao:
     def __init__(self, dominio, imagem, imagem_derivada = None):
@@ -43,6 +46,8 @@ class Interpolacao:
         raise NotImplementedError
 
 
+
+
 class PoliInterp(Interpolacao):
     """Interpola os pontos dados utilizando o metodo de Lagrange e armazena o polinômio simplificado
     Args:
@@ -72,9 +77,13 @@ class PoliInterp(Interpolacao):
 
     def __repr__(self):
         # A representação é uma str do polinômio
-        return f'{self.pol}'
+        return latex(self.pol)
 
     def __call__(self, t):
+        # Retorna o polinômio no ponto x
+        if t == self.x:
+            return self.pol
+
         # Previne extrapolação (valores fora do intervalo do domínio não são bem aproximados)
         if t < min(self.dominio) or t > max(self.dominio):
             raise ValueError('Extrapolação')
@@ -84,9 +93,7 @@ class PoliInterp(Interpolacao):
             if temp.is_integer:
                 return int(temp)
             return float(temp)
-
         return None
-
 
 
 
@@ -160,8 +167,8 @@ class PoliHermite(Interpolacao):
 
 
     def __repr__(self):
-        # Retorna a representação do polinômio simplificado
-        return f'{self.pol}'
+        # Retorna a representação do polinômio simplificado em LateX
+        return latex(self.pol)
 
     def _hx_j(self, j):
         soma = (1-2*(self.x - self.dominio[j])*(self.coef_lagrange[j][1].subs(self.x, self.dominio[j])))*(self.coef_lagrange[j][0])**2
@@ -178,6 +185,11 @@ class PoliHermite(Interpolacao):
         return simplify(pol)
 
     def __call__(self, t):
+        # Retorna o polinômio no ponto x
+        if t == self.x:
+            return self.pol
+
+        # Evita extrapolação
         if min(self.dominio) <= t <= max(self.dominio):
             temp = self.pol.subs(self.x, t)
             if isinstance(temp, Number):
