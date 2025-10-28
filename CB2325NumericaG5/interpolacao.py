@@ -190,11 +190,12 @@ class PoliHermite(Interpolacao):
         
         
 
-def grafico(polinomio):
+def grafico(polinomio, precisao = 100):
     """Esboça o gráfico da classe PoliInterp
 
     Argumentos:
         polinomio (PoliInterp): Polinomio a ser esboçado
+        precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
     """
 
     x_simb, t = symbols('x t')
@@ -216,7 +217,7 @@ def grafico(polinomio):
         if y > ymax:
             ymax = y
     
-    f_vals = linspace(xmin, xmax, 100)
+    f_vals = linspace(xmin, xmax, precisao)
     x_func = x_lamb(f_vals)
     y_func = y_lamb(f_vals)
     
