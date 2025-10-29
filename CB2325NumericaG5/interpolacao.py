@@ -7,21 +7,27 @@ import numbers
 
 class Interpolacao:
     """
-        Classe abstrata que verifica a entrada do domínio, imagem e imagem_derivada.
+    Classe abstrata para verificar e armazenar os dados de entrada comuns às interpolações.
 
-        Args:
-            dominio (list): Lista de pontos do domínio
-            imagem (list): Lista de pontos da imagem
-            imagem_derivada (list): Lista de pontos da imagem da derivada. Padroniza em None
+    Args:
+        dominio (list): Lista de pontos do domínio (valores numéricos, distintos).
+        imagem (list): Lista de valores da função nos pontos do domínio (numéricos).
+        imagem_derivada (list | None): Lista com os valores da derivada nos pontos do domínio,
+            ou None quando não aplicável. Valor padrão: None.
 
-        Raises:
-            TypeError: se o 'dominio' e a 'imagem' não forem listas
-            ValueError: se o tamanho do 'dominio' for diferente do tamanho da 'imagem'
-            TypeError: se o 'dominio', a 'imagem' e a 'imagem_derivada' não forem listas
-            ValueError: se o tamanho do 'dominio', da 'imagem' ou da 'imagem_derivada' forem diferentes
-            ValueError: se o 'dominio' possuir valores repetidos ou quantidade insuficiente de pontos
-            NotImplementedError: se a __repr__ ou o __call__ não forem implementados
-        """
+    Raises:
+        TypeError: Se `dominio`, `imagem` (ou `imagem_derivada`, quando fornecida) não for do tipo list,
+            ou se algum elemento das listas não for um número real.
+        ValueError: Se `dominio` e `imagem` tiverem comprimentos diferentes, se `imagem_derivada`
+            tiver comprimento diferente, se `dominio` contiver valores repetidos ou
+            se `dominio` tiver menos de 2 pontos.
+
+    Attributes:
+        x (sympy.Symbol): Símbolo interno usado para construir expressões simbólicas.
+        dominio (list): Domínio validado (lista de números reais).
+        imagem (list): Valores da função no domínio (lista de números reais).
+        imagem_derivada (list | None): Valores das derivadas no domínio (lista de números reais) ou None.
+    """
 
     def __init__(self, dominio:list, imagem:list, imagem_derivada:list = None):
         # Garantimos que o domínio e a imagem são listas de pontos
@@ -81,20 +87,29 @@ class Interpolacao:
 
 class PoliInterp(Interpolacao):
     """
-        Interpola os pontos dados utilizando o metodo de Lagrange e armazena o polinômio simplificado
+    Polinômio interpolador baseado no metodo de Lagrange.
+
+    Constrói o polinômio interpolador de Lagrange simplificado a partir de
+    listas `dominio` e `imagem` fornecidas na construção da instância.
+
     Args:
-        dominio (list): Lista de pontos do domínio
-        imagem (list): Lista de pontos da imagem
+        dominio (list): Lista de pontos do domínio (valores numéricos distintos).
+        imagem (list): Lista de valores da função nos pontos do domínio (numéricos).
 
     Raises:
-        ValueError: se o ponto não for do tipo int, float ou Symbol
-        ValueError: se o ponto estiver fora do intervalo de interpolação, evitando extrapolação
+        ValueError: Se o ponto passado para `__call__` não for um número real nem um
+            `sympy.Symbol`, ou se o ponto numérico estiver fora do intervalo [min(dominio), max(dominio)]
+            (extrapolação não permitida).
 
-    Returns:
-        str: representação do polinômio interpolador
-        str: representação do polinômio interpolador em LaTeX
-        int: valor do polinômio num ponto específico, se o valor for inteiro
-        float: valor do polinômio num ponto específico, se o valor for um número de ponto flutuante
+    Attributes:
+        pol (sympy.Expr): Polinômio interpolador simplificado (expressão simbólica).
+        x (sympy.Symbol): Símbolo interno herdado de Interpolacao.
+
+    Usage:
+        p = PoliInterp(dominio, imagem)
+        str(p)         # representação do polinômio
+        p(sym)         # retorna LaTeX do polinômio se sym for sympy.Symbol
+        p(valor_real)  # retorna int/float se o valor for numérico dentro do domínio
     """
 
     def __init__(self, dominio, imagem):
@@ -136,21 +151,26 @@ class PoliInterp(Interpolacao):
 
 class InterpLinear(Interpolacao):
     """
-        Cria retas que interpolam pontos dois a dois e armazena elas num dicionário interno dividindo cada reta por intervalo.
+    Interpolação linear por segmentos (retas entre pares consecutivos de pontos).
 
-        Args:
-            dominio (list): Lista de pontos do domínio
-            imagem (list): Lista de pontos da imagem
+    Calcula e armazena retas que ligam cada par consecutivo de pontos do domínio,
+    representadas como expressões simbólicas simplificadas em um dicionário.
 
-        Raises:
-            ValueError: se o ponto não for do tipo int ou float
-            ValueError: se o ponto estiver fora do intervalo de interpolação, evitando extrapolação
+    Args:
+        dominio (list): Lista de pontos do domínio (valores numéricos, distintos).
+        imagem (list): Lista de valores da função nos pontos do domínio (numéricos).
 
-        Returns:
-            dict: representação das retas interpoladoras por partes
-            int: valor da reta num ponto específico, se o valor for inteiro
-            float: valor da reta num ponto específico, se o valor for um número de ponto flutuante
+    Raises:
+        ValueError: Se o ponto passado para `__call__` não for um número real,
+            ou se o ponto estiver fora do intervalo do domínio (extrapolação não permitida).
 
+    Attributes:
+        pares_ord (list[tuple]): Lista de pares ordenados (xi, yi) ordenados por xi.
+        pol (dict): Dicionário mapeando o intervalo (xi, xi+1) para a expressão simbólica da reta entre esses pontos.
+
+    Usage:
+        l = InterpLinear(dominio, imagem)
+        l(valor_real)  # retorna int/float se o valor estiver no domínio
     """
 
     def __init__(self, dominio, imagem):
@@ -201,26 +221,30 @@ class InterpLinear(Interpolacao):
 
 class PoliHermite(Interpolacao):
     """
-        Interpola utilizando o metodo de Hermite e armazena o polinomio simplificado
+    Interpolador polinomial pelo metodo de Hermite (uso de valores e derivadas).
 
-        Args:
-            dominio (list): Lista de pontos do domínio
-            imagem (list): Lista de pontos da imagem
-            imagem_derivada (list): Lista de pontos da imagem da derivada
+    Constrói o polinômio de Hermite a partir de `dominio`, `imagem` e `imagem_derivada`,
+    usando funções auxiliares que computam os polinômios base de Hermite Hx_j e Hy_j.
 
-        Raises:
-            ValueError: se o ponto não for do tipo int, float ou Symbol
-            ValueError: se o ponto estiver fora do intervalo de interpolação, evitando extrapolação
+    Args:
+        dominio (list): Lista de pontos do domínio (valores numéricos, distintos).
+        imagem (list): Lista de valores da função nos pontos do domínio (numéricos).
+        imagem_derivada (list): Lista de valores das derivadas nos pontos do domínio (numéricos).
 
-        Returns:
-            str: representação do polinômio interpolador
-            str: primeiro coeficiente de Hermite
-            str: segundo coeficiente de Hermite
-            str: polinômio de Hermite
-            str: representação do polinômio interpolador em LaTeX
-            int: valor do polinômio num ponto específico, se o valor for inteiro
-            float: valor do polinômio num ponto específico, se o valor for um número de ponto flutuante
-        """
+    Raises:
+        ValueError: Se o ponto passado para `__call__` não for um número real nem um `sympy.Symbol`,
+            ou se o ponto numérico estiver fora do intervalo [min(dominio), max(dominio)] (extrapolação não permitida).
+
+    Attributes:
+        coef_lagrange (dict): Dicionário em que cada entrada j contém (L_j(x), L_j'(x)) simplificados.
+        pol (sympy.Expr): Polinômio de Hermite resultante e simplificado.
+
+    Usage:
+        h = PoliHermite(dominio, imagem, imagem_derivada)
+        str(h)           # representação do polinômio
+        h(sym)           # retorna LaTeX do polinômio se sym for sympy.Symbol
+        h(valor_real)    # retorna int/float se o valor estiver no domínio
+    """
 
     def __init__(self, dominio, imagem, imagem_derivada):
         super().__init__(dominio, imagem, imagem_derivada)
