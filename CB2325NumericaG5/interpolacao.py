@@ -1,4 +1,6 @@
-from sympy import symbols, simplify, Number, latex, Symbol
+from sympy import symbols, simplify, lambdify, Number, latex, Symbol
+from numpy import linspace
+from matplotlib.pyplot import show, subplots
 from typing import Union
 import numbers
 
@@ -165,8 +167,7 @@ class InterpLinear(Interpolacao):
         # Calcula cada reta
         for i in range(len(self.pares_ord) - 1):
             reta = self.pares_ord[i][1] + (self.x - self.pares_ord[i][0]) * (
-                    (self.pares_ord[i + 1][1] - self.pares_ord[i][1]) / (
-                    self.pares_ord[i + 1][0] - self.pares_ord[i][0]))
+                (self.pares_ord[i + 1][1] - self.pares_ord[i][1]) / (self.pares_ord[i + 1][0] - self.pares_ord[i][0]))
 
             # Adiciona a reta simplificada no dicionário: (xi, xi+1): reta
             self.pol[(self.pares_ord[i][0], self.pares_ord[i + 1][0])] = simplify(reta)
@@ -273,3 +274,88 @@ class PoliHermite(Interpolacao):
 
         else:
             raise ValueError('Valores fora do intervalo do domínio não são bem aproximados')
+
+
+def grafico(polinomio, precisao = 100):
+    """Esboça o gráfico das subclasses da classe Interpolacao
+
+    Argumentos:
+        polinomio (PoliInterp, InterpLinear, PoliHermite): Polinomio a ser esboçado
+        precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
+    """
+    
+    x_simb, t = symbols('x t')
+    
+    x_expr = t
+    x_lamb = lambdify(t, x_expr, "numpy")
+    
+    f, ax = subplots()
+    ax.set_aspect("equal")
+    
+    if type(polinomio) == InterpLinear:
+        precisao = precisao//len(polinomio.dominio)
+        
+        xmin, xmax = polinomio.pares_ord[0][0], polinomio.pares_ord[len(polinomio.pares_ord) - 1][0]
+        ymin, ymax = polinomio.imagem[0], polinomio.imagem[0]
+        
+        for y in polinomio.imagem:
+            if y < ymin:
+                ymin = y
+            if y > ymax:
+                ymax = y
+                
+        mini, maxi = min(xmin, ymin), max(xmax, ymax)
+        
+        ax.set_xlim(mini-1, maxi+1)
+        ax.set_ylim(mini-1, maxi+1)
+        
+        for i in range(1,len(polinomio.pares_ord)):
+            y_expr = polinomio.pares_ord[i-1][1] + (
+                x_simb - polinomio.pares_ord[i-1][0]) * (
+                    polinomio.pares_ord[i][1] - polinomio.pares_ord[i-1][1]) / (
+                        polinomio.pares_ord[i][0] - polinomio.pares_ord[i-1][0])
+            y_lamb = lambdify(x_simb, y_expr, "numpy")
+            
+            f_vals = linspace(polinomio.pares_ord[i-1][0], polinomio.pares_ord[i][0], precisao)
+            x_func = x_lamb(f_vals)
+            y_func = y_lamb(f_vals)
+            
+            ax.plot(x_func, y_func)
+             
+    else:
+        y_expr = polinomio.pol
+        y_lamb = lambdify(x_simb, y_expr, "numpy")
+        
+        xmin, xmax, ymin, ymax = polinomio.dominio[0], polinomio.dominio[0], polinomio.imagem[0], polinomio.imagem[0]
+        for x in polinomio.dominio:
+            if x < xmin:
+                xmin = x
+            if x > xmax:
+                xmax = x
+        for y in polinomio.imagem:
+            if y < ymin:
+                ymin = y
+            if y > ymax:
+                ymax = y
+        
+        mini, maxi = min(xmin, ymin), max(xmax, ymax)
+        
+        ax.set_xlim(mini-1, maxi+1)
+        ax.set_ylim(mini-1, maxi+1)
+        
+        f_vals = linspace(xmin, xmax, precisao)
+        x_func = x_lamb(f_vals)
+        y_func = y_lamb(f_vals)
+        
+        ax.plot(x_func, y_func)
+    
+    for i in range(len(polinomio.dominio)):
+            x_ponto, y_ponto = polinomio.dominio[i], polinomio.imagem[i]
+            ax.plot(x_ponto, y_ponto, "o")
+        
+    show()
+
+metodo1 = InterpLinear([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
+metodo2 = PoliInterp([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
+grafico(metodo1)
+grafico(metodo2)
