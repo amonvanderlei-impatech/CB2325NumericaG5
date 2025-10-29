@@ -256,4 +256,3 @@ class PoliHermite(Interpolacao):
             return None
         else:
             raise ValueError('Valores fora do intervalo do domínio não são bem aproximados')
-
