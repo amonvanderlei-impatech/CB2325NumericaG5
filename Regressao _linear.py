@@ -24,16 +24,29 @@ def media(dado: list) -> float:
         return float(soma/(len(dado)))
     
 
-def regressão_linear(xizes,ypsilons):
+def regressão_linear(xizes:list, ypsilons:list) -> tuple :
+    """Calcula os coeficientes (angular,linear) da reta que melhor se ajusta aos dados.
+    Args:
+        xiszes (list): Coordenada x de cada ponto.
+        ypsilons (list): Coordenada y de cada ponto.
+
+    Raises:
+        KeyError: A quantidade de abcissas deve ser igual à de ordenadas.
+
+    Returns:
+        tuple: Coeficientes da reta de regressão linear. (Coeficiente angular,Coeficiente linear)
+    """
     if len(xizes) != len(ypsilons):
+
         raise KeyError(" A quantidade de abcissas deve ser igual à de ordenadas.")
     
 
     den_beta_chapeu =  -len(xizes)*(media(xizes)*media(xizes))
+
     num_beta_chapeu =  -len(xizes)*media(xizes)*media(ypsilons)
 
-
     for k in range(len(xizes)):
+
 
         den_beta_chapeu += xizes[k]*xizes[k]
 
