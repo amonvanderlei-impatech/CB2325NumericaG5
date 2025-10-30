@@ -118,8 +118,19 @@ def gauss_jordan(A, b, tol=1e-12):
     x = [A[i][-1] for i in range(n)]
     return x
 
-def aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio):
+def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio: int) -> list:
+    """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano.
 
+    Args:
+        lista_de_coordenadas (list): Uma lista dos pontos cuja função vai aproximar.
+        grau_do_polinomio (int): Qual tipo de polinômio a função retornará. 1 é linear, por exemplo.
+
+    Raises:
+        KeyError: Caso haja menos dados do que o número do grau do polinômio requerido, existirão infinitas "soluções". 
+
+    Returns:
+        list: Lista dos coeficientes em ordem crescente de grau.
+    """    
     quantidade_de_pontos = len(lista_de_coordenadas)
 
     if quantidade_de_pontos < grau_do_polinomio: #Condição necessária para que um polinômio seja encontrado.
@@ -135,8 +146,16 @@ def aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio):
     matriz_xiszes = [[e**i for e in xiszes] for i in range(grau_do_polinomio+1)]
 
     #Feita a matriz de cada xis nos devidos graus para que o polinômio seja encontrado.
-    def produto_de_rows(row1,row2): #Retorna o elemento da matriz resultado, quando se trata do produto de matrizes.
+    def produto_de_rows(row1:list, row2:list) -> int: #Retorna o elemento da matriz resultado, quando se trata do produto de matrizes.
+        """Executa uma operação entre listas do mesmo tamanho.
 
+        Args:
+            row1 (list): Lista de floats.
+            row2 (list): Lista de floats.
+
+        Returns:
+            int: O resultado do "produto interno" dos "vetores" fornecidos.
+        """        
         if len(row1) == len(row2):
 
             contador = 0
