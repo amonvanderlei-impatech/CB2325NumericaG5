@@ -1,13 +1,29 @@
-def media(dado): #recebe uma lista de inteiros e retorna a sua média
+def media(dado: list) -> float:
+    """Esta função retorna a média dos elementos da lista dada.
+
+    Args:
+        dado (list): Números (inteiros ou float).
+
+    Returns:
+        float: A média aritmética dos dados fornecidos.
+    """    
+
     if len(dado) == 0:
+
         return 0
+    
     else:
+
         soma = 0
 
         for i in dado:
+
+
             soma += i
         
-        return soma/(len(dado))
+        return float(soma/(len(dado)))
+    
+
 def regressão_linear(xizes,ypsilons):
     if len(xizes) != len(ypsilons):
         raise KeyError(" A quantidade de abcissas deve ser igual à de ordenadas.")
