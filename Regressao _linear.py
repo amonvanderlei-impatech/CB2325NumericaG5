@@ -118,8 +118,8 @@ def gauss_jordan(A, b, tol=1e-12):
     x = [A[i][-1] for i in range(n)]
     return x
 
-def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio: int) -> list:
-    """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano.
+def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int) -> list:
+    """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano. Retorna os coeficientes.
 
     Args:
         lista_de_coordenadas (list): Uma lista dos pontos cuja função vai aproximar.
@@ -182,8 +182,16 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio: int) ->
 
 
 
-def txt_aproximacao_polinomial(lista_de_coordenadas,grau_do_polinômio):
+def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinômio:int) -> str:
+    """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano. Retorna o polinômio.
 
+    Args:
+        lista_de_coordenadas (list): Uma lista dos pontos cuja função vai aproximar.
+        grau_do_polin (_type_): Qual tipo de polinômio a função retornará. 1 é linear, por exemplo.
+
+    Returns:
+        str: O polinômio na sua forma por extenso.
+    """    
     k = str()
 
     a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinômio)
