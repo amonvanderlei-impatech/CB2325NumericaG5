@@ -63,60 +63,123 @@ y = [1.1,1.9,3.0,3.9,5.2]
 b,a = regressão_linear(x,y)
 print(f"y = {b:.2f}x + {a:.2f}")
 
-def gauss_jordan(A, b, tol=1e-12):
-    """
-    Resolve o sistema linear Ax = b pelo método de Gauss-Jordan, sem usar numpy.
 
-    Parâmetros:
-    ------------
-    A : lista de listas (n x n)
-        Matriz dos coeficientes.
-    b : lista (n)
-        Vetor dos termos independentes.
-    tol : float
-        Tolerância para detectar pivôs nulos.
 
-    Retorna:
-    ---------
-    x : lista
-        Solução do sistema linear.
-    """
+def resolvedor_de_sistemas(MC:list, VI:list, zero = 1e-11) -> list:
+    """Resolve Sistemas Lineares. Medios e grandes é por Gauss-Jordan.
 
-    # Número de equações
-    n = len(A)
+    Args:
+        MC (list): Os coeficientes das incognitas do sistema linear.
+        VI (list): Os coeficientes independentes das variáveis.
+        zero (float, optional): Abaixo desse valor o número é considerado zero; isso para que não haja divisões por números muito pequenos. Defaults to 1e-11.
 
-    # Monta a matriz aumentada [A|b]
-    for i in range(n):
-        A[i] = A[i] + [b[i]]
+    Raises:
+        ValueError: Sistema impossível de ser resolvido, alguma linha deu apenas 0.
 
-    # Eliminação de Gauss-Jordan
-    for i in range(n):
-        # Encontra o pivô máximo (para estabilidade numérica)
-        max_row = i
-        for k in range(i+1, n):
-            if abs(A[k][i]) > abs(A[max_row][i]):
-                max_row = k
+    Returns:
+        list: Lista do valor de cada incognita, caso venha na ordem MC = [[a_x + a_y + a_z + ...], [b_x + b_y+...], ...], a resposta virá em [x,y,z,...].
+    """    
 
-        # Verifica se o pivô é nulo
-        if abs(A[max_row][i]) < tol:
-            raise ValueError("Sistema sem solução única (pivô nulo).")
+    # Casos específicos, onde VI ==1 (igualdade direta). 2x2, 3x3, 4x4. Erro na qntd de coef e incognitas.
 
-        # Troca de linha se necessário
-        A[i], A[max_row] = A[max_row], A[i]
+    Matriz_Coeficientes = list(MC)
 
-        # Normaliza a linha do pivô
-        pivot = A[i][i]
-        A[i] = [a / pivot for a in A[i]]
+    Vetor_Independentes = list(VI)
 
-        # Elimina as outras linhas
-    for j in range(n):
-        if j != i:
-            fator = A[j][i]
-            A[j] = [A[j][k] - fator * A[i][k] for k in range(n+1)]
+    Matriz_Aumentada = [Matriz_Coeficientes[e] + [Vetor_Independentes[e]] for e in range(len(Vetor_Independentes))]
 
-    # Extrai a solução (última coluna)
-    x = [A[i][-1] for i in range(n)]
-    return x
+    def prod_row(row:list, produtado:float, div=False) -> None:
+
+        auxiliar = [r for r in row]
+        if div == True:
+
+            for r in range(len(row)):
+
+
+                auxiliar[r] /= produtado
+
+        else:
+
+            for r in range(len(row)):
+
+
+                auxiliar[r] *= produtado
+
+        return auxiliar
+    
+    def sum_row_row(row:list, somado:list, sub=False) -> None:
+
+        auxiliar = [r for r in row]
+
+        if sub == True:
+
+            for r in range(len(row)):
+
+
+                auxiliar[r] -= somado[r]
+
+        else:
+
+            for r in range(len(row)):
+
+
+                auxiliar[r] += somado[r]
+        
+        return auxiliar
+
+    for kk in range(len(Vetor_Independentes)):
+
+        
+        linhas_trocadas = False
+
+        if abs(Matriz_Aumentada[kk][kk]) <= zero:
+
+            for j in  range(kk+1, len(Vetor_Independentes)):
+
+
+                if abs(Matriz_Aumentada[j][kk]) > zero:
+
+                    Matriz_Aumentada[j], Matriz_Aumentada[kk] = Matriz_Aumentada[kk], Matriz_Aumentada[j]
+
+                    linhas_trocadas = True
+
+                    break
+
+            if linhas_trocadas == False:
+
+                raise ValueError
+
+        e = Matriz_Aumentada[kk][kk]
+
+        transição = list(Matriz_Aumentada[kk])
+
+        Matriz_Aumentada[kk] = prod_row(transição, e, True) #Divide aquela linha pelo elemento da diagonal.
+
+        for i in range(kk+1, len(Vetor_Independentes)): #Processo de triangulação
+
+            if abs(Matriz_Aumentada[i][kk]) <= zero:
+
+                Matriz_Aumentada[i][kk] = 0
+
+                continue
+            
+            variavel_de_suporte1 = Matriz_Aumentada[i][kk]
+
+            variavel_de_suporte2 = prod_row(Matriz_Aumentada[kk], variavel_de_suporte1)
+
+            Matriz_Aumentada[i] = sum_row_row(Matriz_Aumentada[i], variavel_de_suporte2, True)
+    
+    #A partir daqui já temos uma matriz triangular superior.
+    x = [0 for i in range(len(Vetor_Independentes))]
+
+    for i in reversed(range(len(Vetor_Independentes))):
+
+        soma = sum(Matriz_Aumentada[i][j] * x[j] for j in range(i + 1, len(Vetor_Independentes)))
+
+        x[i] = (Matriz_Aumentada[i][-1] - soma) / Matriz_Aumentada[i][i]
+
+
+    return x #retorna [x,y,z,...]
 
 def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int) -> list:
     """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano. Retorna os coeficientes.
@@ -176,7 +239,7 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int) -> 
     vetor_ypsilons_do_sistema = [produto_de_rows(ypsilons,matriz_xiszes[i]) for i in range(len(matriz_xiszes))]
 
 
-    vetor_solucao = gauss_jordan(matriz_produto_xiszes,vetor_ypsilons_do_sistema)
+    vetor_solucao = resolvedor_de_sistemas(matriz_produto_xiszes,vetor_ypsilons_do_sistema)
 
     return vetor_solucao
 
@@ -215,7 +278,9 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinômio:int
 
     return k
 
-bolha = [(1,2),(-1,-1),(0,8),(2,2),(5,8),(-21,-44),(-17,-7),(13,4),(35,53),(-3,2),(9,-9),(.12,-.04),(.09,-.009)]
+bolha = [(1,2),(-1,-1),(0,8),(2,2),(5,8),
+         (-21,-44),(-17,-7),(13,4),(35,53),
+         (-3,2),(9,-9),(.12,-.04),(.09,-.009)]
 a = aproximacao_polinomial(bolha,3)
 print(a)
 a = txt_aproximacao_polinomial(bolha,3)
