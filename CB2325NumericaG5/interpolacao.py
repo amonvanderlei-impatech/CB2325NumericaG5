@@ -1,5 +1,5 @@
 from sympy import symbols, simplify, lambdify, Number, latex, Symbol
-from numpy import linspace
+from numpy import linspace, full_like
 from matplotlib.pyplot import show, subplots
 from typing import Union
 import numbers
@@ -308,16 +308,12 @@ def grafico(polinomio, precisao = 100):
         precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
     """
     
-    x_simb, t = symbols('x t')
-    
-    x_expr = t
-    x_lamb = lambdify(t, x_expr, "numpy")
-    
-    f, ax = subplots()
+    x_simb = symbols('x')
+    _, ax = subplots()
     ax.set_aspect("equal")
     
-    if type(polinomio) == InterpLinear:
-        precisao = precisao//len(polinomio.dominio)
+    if isinstance(polinomio, InterpLinear):
+        precisao = precisao//(len(polinomio.dominio) - 1)
         
         xmin, xmax = polinomio.pares_ord[0][0], polinomio.pares_ord[len(polinomio.pares_ord) - 1][0]
         ymin, ymax = polinomio.imagem[0], polinomio.imagem[0]
@@ -340,11 +336,12 @@ def grafico(polinomio, precisao = 100):
                         polinomio.pares_ord[i][0] - polinomio.pares_ord[i-1][0])
             y_lamb = lambdify(x_simb, y_expr, "numpy")
             
-            f_vals = linspace(polinomio.pares_ord[i-1][0], polinomio.pares_ord[i][0], precisao)
-            x_func = x_lamb(f_vals)
-            y_func = y_lamb(f_vals)
+            y_vals = linspace(polinomio.pares_ord[i-1][0], polinomio.pares_ord[i][0], precisao)
+            y_func = y_lamb(y_vals)
+            if isinstance(y_func, (int, float)):
+                y_func = full_like(y_vals, y_func)
             
-            ax.plot(x_func, y_func)
+            ax.plot(y_vals, y_func)
              
     else:
         y_expr = polinomio.pol
@@ -367,11 +364,12 @@ def grafico(polinomio, precisao = 100):
         ax.set_xlim(mini-1, maxi+1)
         ax.set_ylim(mini-1, maxi+1)
         
-        f_vals = linspace(xmin, xmax, precisao)
-        x_func = x_lamb(f_vals)
-        y_func = y_lamb(f_vals)
+        y_vals = linspace(xmin, xmax, precisao)
+        y_func = y_lamb(y_vals)
+        if isinstance(y_func, (int, float)):
+                y_func = full_like(y_vals, y_func)
         
-        ax.plot(x_func, y_func)
+        ax.plot(y_vals, y_func)
     
     for i in range(len(polinomio.dominio)):
             x_ponto, y_ponto = polinomio.dominio[i], polinomio.imagem[i]
@@ -379,7 +377,11 @@ def grafico(polinomio, precisao = 100):
         
     show()
 
-metodo1 = InterpLinear([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
-metodo2 = PoliInterp([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
-grafico(metodo1)
-grafico(metodo2)
+polinomio1 = InterpLinear([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
+polinomio2 = PoliInterp([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
+polinomio3 = InterpLinear([0, 1],[0, 0])
+polinomio4 = PoliInterp([0, 1],[0, 0])
+grafico(polinomio1)
+grafico(polinomio2)
+grafico(polinomio3)
+grafico(polinomio4)
