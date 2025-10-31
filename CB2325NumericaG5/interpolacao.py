@@ -83,6 +83,50 @@ class Interpolacao:
 
     def __call__(self, t):
         raise NotImplementedError
+    
+    def grafico(self, precisao = 100):
+        """Esboça o gráfico da classe Interpolacao
+        
+        Argumentos:
+            precisao (int, opcional): número de pontos do polinomio a serem calculados. Padroniza em 100.
+        """
+        
+        x_simb = symbols('x')
+        _, ax = subplots()
+        ax.set_aspect("equal")
+        
+        y_expr = self.pol
+        y_lamb = lambdify(x_simb, y_expr, "numpy")
+        
+        xmin, xmax, ymin, ymax = self.dominio[0], self.dominio[0], self.imagem[0], self.imagem[0]
+        for x in self.dominio:
+            if x < xmin:
+                xmin = x
+            if x > xmax:
+                xmax = x
+        for y in self.imagem:
+            if y < ymin:
+                ymin = y
+            if y > ymax:
+                ymax = y
+        
+        mini, maxi = min(xmin, ymin), max(xmax, ymax)
+        
+        ax.set_xlim(mini-1, maxi+1)
+        ax.set_ylim(mini-1, maxi+1)
+        
+        y_vals = linspace(xmin, xmax, precisao)
+        y_func = y_lamb(y_vals)
+        if isinstance(y_func, (int, float)):
+                y_func = full_like(y_vals, y_func)
+        
+        ax.plot(y_vals, y_func)
+        
+        for i in range(len(self.dominio)):
+                x_ponto, y_ponto = self.dominio[i], self.imagem[i]
+                ax.plot(x_ponto, y_ponto, "o")
+            
+        show()
 
 
 class PoliInterp(Interpolacao):
@@ -217,6 +261,52 @@ class InterpLinear(Interpolacao):
             if temp[i] <= p <= temp[i + 1]:
                 return self._eval((temp[i], temp[i + 1]), p)
         return None
+    
+    def grafico(self, precisao = 100):
+        """Esboça o gráfico da classe InterpLinear
+        
+        Argumentos:
+            precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
+        """
+        
+        x_simb = symbols('x')
+        _, ax = subplots()
+        ax.set_aspect("equal")
+        precisao = precisao//(len(self.dominio) - 1)
+        
+        xmin, xmax = self.pares_ord[0][0], self.pares_ord[len(self.pares_ord) - 1][0]
+        ymin, ymax = self.imagem[0], self.imagem[0]
+        
+        for y in self.imagem:
+            if y < ymin:
+                ymin = y
+            if y > ymax:
+                ymax = y
+                
+        mini, maxi = min(xmin, ymin), max(xmax, ymax)
+        
+        ax.set_xlim(mini-1, maxi+1)
+        ax.set_ylim(mini-1, maxi+1)
+        
+        for i in range(1,len(self.pares_ord)):
+            y_expr = self.pares_ord[i-1][1] + (
+                x_simb - self.pares_ord[i-1][0]) * (
+                    self.pares_ord[i][1] - self.pares_ord[i-1][1]) / (
+                        self.pares_ord[i][0] - self.pares_ord[i-1][0])
+            y_lamb = lambdify(x_simb, y_expr, "numpy")
+            
+            y_vals = linspace(self.pares_ord[i-1][0], self.pares_ord[i][0], precisao)
+            y_func = y_lamb(y_vals)
+            if isinstance(y_func, (int, float)):
+                y_func = full_like(y_vals, y_func)
+            
+            ax.plot(y_vals, y_func)
+        
+        for i in range(len(self.dominio)):
+                x_ponto, y_ponto = self.dominio[i], self.imagem[i]
+                ax.plot(x_ponto, y_ponto, "o")
+            
+        show()
 
 
 class PoliHermite(Interpolacao):
@@ -298,90 +388,3 @@ class PoliHermite(Interpolacao):
 
         else:
             raise ValueError('Valores fora do intervalo do domínio não são bem aproximados')
-
-
-def grafico(polinomio, precisao = 100):
-    """Esboça o gráfico das subclasses da classe Interpolacao
-
-    Argumentos:
-        polinomio (PoliInterp, InterpLinear, PoliHermite): Polinomio a ser esboçado
-        precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
-    """
-    
-    x_simb = symbols('x')
-    _, ax = subplots()
-    ax.set_aspect("equal")
-    
-    if isinstance(polinomio, InterpLinear):
-        precisao = precisao//(len(polinomio.dominio) - 1)
-        
-        xmin, xmax = polinomio.pares_ord[0][0], polinomio.pares_ord[len(polinomio.pares_ord) - 1][0]
-        ymin, ymax = polinomio.imagem[0], polinomio.imagem[0]
-        
-        for y in polinomio.imagem:
-            if y < ymin:
-                ymin = y
-            if y > ymax:
-                ymax = y
-                
-        mini, maxi = min(xmin, ymin), max(xmax, ymax)
-        
-        ax.set_xlim(mini-1, maxi+1)
-        ax.set_ylim(mini-1, maxi+1)
-        
-        for i in range(1,len(polinomio.pares_ord)):
-            y_expr = polinomio.pares_ord[i-1][1] + (
-                x_simb - polinomio.pares_ord[i-1][0]) * (
-                    polinomio.pares_ord[i][1] - polinomio.pares_ord[i-1][1]) / (
-                        polinomio.pares_ord[i][0] - polinomio.pares_ord[i-1][0])
-            y_lamb = lambdify(x_simb, y_expr, "numpy")
-            
-            y_vals = linspace(polinomio.pares_ord[i-1][0], polinomio.pares_ord[i][0], precisao)
-            y_func = y_lamb(y_vals)
-            if isinstance(y_func, (int, float)):
-                y_func = full_like(y_vals, y_func)
-            
-            ax.plot(y_vals, y_func)
-             
-    else:
-        y_expr = polinomio.pol
-        y_lamb = lambdify(x_simb, y_expr, "numpy")
-        
-        xmin, xmax, ymin, ymax = polinomio.dominio[0], polinomio.dominio[0], polinomio.imagem[0], polinomio.imagem[0]
-        for x in polinomio.dominio:
-            if x < xmin:
-                xmin = x
-            if x > xmax:
-                xmax = x
-        for y in polinomio.imagem:
-            if y < ymin:
-                ymin = y
-            if y > ymax:
-                ymax = y
-        
-        mini, maxi = min(xmin, ymin), max(xmax, ymax)
-        
-        ax.set_xlim(mini-1, maxi+1)
-        ax.set_ylim(mini-1, maxi+1)
-        
-        y_vals = linspace(xmin, xmax, precisao)
-        y_func = y_lamb(y_vals)
-        if isinstance(y_func, (int, float)):
-                y_func = full_like(y_vals, y_func)
-        
-        ax.plot(y_vals, y_func)
-    
-    for i in range(len(polinomio.dominio)):
-            x_ponto, y_ponto = polinomio.dominio[i], polinomio.imagem[i]
-            ax.plot(x_ponto, y_ponto, "o")
-        
-    show()
-
-polinomio1 = InterpLinear([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
-polinomio2 = PoliInterp([-2, -1, 0, 1, 2],[0, -1, 2, -3, 4])
-polinomio3 = InterpLinear([0, 1],[0, 0])
-polinomio4 = PoliInterp([0, 1],[0, 0])
-grafico(polinomio1)
-grafico(polinomio2)
-grafico(polinomio3)
-grafico(polinomio4)
