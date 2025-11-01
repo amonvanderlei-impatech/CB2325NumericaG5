@@ -7,7 +7,7 @@ listas de pontos no plano. Inclui implementações para:
 - interpolação linear por partes (InterpLinear),
 - interpolação de Hermite usando valores e derivadas (PoliHermite).
 
-As classes validam entradas, constroem expressões simbólicas (SymPy) e expõem um metodo
+As classes validam entradas, constroem expressões simbólicas (SymPy) e expõem um método
 `grafico(precisao: int = 100) -> None` para esboçar o polinômio ou os segmentos.
 """
 
@@ -107,30 +107,31 @@ class Interpolacao:
             precisao (int, opcional): número de pontos do polinomio a serem calculados. Padroniza em 100.
         """
         
+        #Preparação
         x_simb = symbols('x')
         _, ax = subplots()
         ax.set_aspect("equal")
         
-        y_expr = self.pol
-        y_lamb = lambdify(x_simb, y_expr, "numpy")
-        
+        #Determinação dos limites do gráfico
         xmin, xmax, ymin, ymax = min(self.dominio), max(self.dominio), min(self.imagem), max(self.imagem)
         mini, maxi = min(xmin, ymin), max(xmax, ymax)
-        
         ax.set_xlim(mini-1, maxi+1)
         ax.set_ylim(mini-1, maxi+1)
-        
+
+        #Conversão do polinomio
         y_vals = linspace(xmin, xmax, precisao)
+        y_lamb = lambdify(x_simb, self.pol, "numpy")
         y_func = y_lamb(y_vals)
         if isinstance(y_func, (int, float)):
                 y_func = full_like(y_vals, y_func)
         
+        #Esboço da curva e dos pontos
         ax.plot(y_vals, y_func)
-        
         for i in range(len(self.dominio)):
                 x_ponto, y_ponto = self.dominio[i], self.imagem[i]
                 ax.plot(x_ponto, y_ponto, "o")
         
+        #Exibição
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         ax.grid(True)
@@ -139,7 +140,7 @@ class Interpolacao:
 
 class PoliInterp(Interpolacao):
     """
-    Polinômio interpolador baseado no metodo de Lagrange.
+    Polinômio interpolador baseado no método de Lagrange.
 
     Constrói o polinômio interpolador de Lagrange simplificado a partir de
     listas `dominio` e `imagem` fornecidas na construção da instância.
@@ -167,7 +168,7 @@ class PoliInterp(Interpolacao):
     def __init__(self, dominio:list, imagem:list):
         super().__init__(dominio, imagem)
 
-        # Metodo de Lagrange
+        # método de Lagrange
         soma = 0
         for i in range(len(self.dominio)):
             prod = 1
@@ -278,35 +279,37 @@ class InterpLinear(Interpolacao):
             precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
         """
         
+        #Preparação
         x_simb = symbols('x')
         _, ax = subplots()
         ax.set_aspect("equal")
         precisao = precisao//(len(self.dominio) - 1)
         
+        #Determinação dos limites do gráfico
         xmin, xmax, ymin, ymax = self.pares_ord[0][0], self.pares_ord[len(self.pares_ord) - 1][0], min(self.imagem), max(self.imagem)
         mini, maxi = min(xmin, ymin), max(xmax, ymax)
-        
         ax.set_xlim(mini-1, maxi+1)
         ax.set_ylim(mini-1, maxi+1)
         
+        #Conversão do polinomio e esboço das retas
         for i in range(1,len(self.pares_ord)):
             y_expr = self.pares_ord[i-1][1] + (
                 x_simb - self.pares_ord[i-1][0]) * (
                     self.pares_ord[i][1] - self.pares_ord[i-1][1]) / (
                         self.pares_ord[i][0] - self.pares_ord[i-1][0])
-            y_lamb = lambdify(x_simb, y_expr, "numpy")
-            
             y_vals = linspace(self.pares_ord[i-1][0], self.pares_ord[i][0], precisao)
+            y_lamb = lambdify(x_simb, y_expr, "numpy")
             y_func = y_lamb(y_vals)
             if isinstance(y_func, (int, float)):
                 y_func = full_like(y_vals, y_func)
-            
             ax.plot(y_vals, y_func)
         
+        #Esboço dos pontos
         for i in range(len(self.dominio)):
                 x_ponto, y_ponto = self.dominio[i], self.imagem[i]
                 ax.plot(x_ponto, y_ponto, "o")
         
+        #Exibição
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         ax.grid(True)
@@ -315,7 +318,7 @@ class InterpLinear(Interpolacao):
 
 class PoliHermite(Interpolacao):
     """
-    Interpolador polinomial pelo metodo de Hermite (uso de valores e derivadas).
+    Interpolador polinomial pelo método de Hermite (uso de valores e derivadas).
 
     Constrói o polinômio de Hermite a partir de `dominio`, `imagem` e `imagem_derivada`,
     usando funções auxiliares que computam os polinômios base de Hermite Hx_j e Hy_j.
