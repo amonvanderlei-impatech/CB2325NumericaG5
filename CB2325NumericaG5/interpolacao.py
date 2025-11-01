@@ -1,3 +1,17 @@
+"""
+Módulo para cálculo de polinômios interpoladores.
+
+Este módulo fornece classes para construir e avaliar polinômios interpoladores a partir de
+listas de pontos no plano. Inclui implementações para:
+- interpolação de Lagrange (PoliInterp),
+- interpolação linear por partes (InterpLinear),
+- interpolação de Hermite usando valores e derivadas (PoliHermite).
+
+As classes validam entradas, constroem expressões simbólicas (SymPy) e expõem um metodo
+`grafico(precisao: int = 100) -> None` para esboçar o polinômio ou os segmentos.
+"""
+
+
 from sympy import symbols, simplify, lambdify, Number, latex, Symbol
 from numpy import linspace, full_like
 from matplotlib.pyplot import show, subplots
@@ -7,7 +21,7 @@ import numbers
 
 class Interpolacao:
     """
-    Classe abstrata para verificar e armazenar os dados de entrada comuns às interpolações.
+    Classe base para verificar e armazenar os dados de entrada comuns às interpolações.
 
     Args:
         dominio (list): Lista de pontos do domínio (valores numéricos, distintos).
@@ -28,6 +42,7 @@ class Interpolacao:
         imagem (list): Valores da função no domínio (lista de números reais).
         imagem_derivada (list | None): Valores das derivadas no domínio (lista de números reais) ou None.
     """
+
 
     def __init__(self, dominio:list, imagem:list, imagem_derivada:list = None):
         # Garantimos que o domínio e a imagem são listas de pontos
@@ -81,11 +96,12 @@ class Interpolacao:
     def __repr__(self):
         raise NotImplementedError
 
-    def __call__(self, t):
+    def __call__(self, p:Union[int, float, Symbol]):
         raise NotImplementedError
     
-    def grafico(self, precisao = 100):
-        """Esboça o gráfico da classe Interpolacao
+    def grafico(self, precisao:int = 100) -> None:
+        """
+        Esboça o gráfico da classe Interpolacao
         
         Argumentos:
             precisao (int, opcional): número de pontos do polinomio a serem calculados. Padroniza em 100.
@@ -156,7 +172,7 @@ class PoliInterp(Interpolacao):
         p(valor_real)  # retorna int/float se o valor for numérico dentro do domínio
     """
 
-    def __init__(self, dominio, imagem):
+    def __init__(self, dominio:list, imagem:list):
         super().__init__(dominio, imagem)
 
         # Metodo de Lagrange
@@ -217,7 +233,7 @@ class InterpLinear(Interpolacao):
         l(valor_real)  # retorna int/float se o valor estiver no domínio
     """
 
-    def __init__(self, dominio, imagem):
+    def __init__(self, dominio:list, imagem:list):
         super().__init__(dominio, imagem)
 
         self.pares_ord = []
@@ -262,8 +278,9 @@ class InterpLinear(Interpolacao):
                 return self._eval((temp[i], temp[i + 1]), p)
         return None
     
-    def grafico(self, precisao = 100):
-        """Esboça o gráfico da classe InterpLinear
+    def grafico(self, precisao:int = 100) -> None:
+        """
+        Esboça o gráfico da classe InterpLinear
         
         Argumentos:
             precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
@@ -336,7 +353,7 @@ class PoliHermite(Interpolacao):
         h(valor_real)    # retorna int/float se o valor estiver no domínio
     """
 
-    def __init__(self, dominio, imagem, imagem_derivada):
+    def __init__(self, dominio:list, imagem:list, imagem_derivada:list):
         super().__init__(dominio, imagem, imagem_derivada)
 
         # Dicionário com os coeficientes de Lagrange
@@ -351,15 +368,14 @@ class PoliHermite(Interpolacao):
         # Encontra o polinômio de hermite
         self.pol = self._hermite()
 
-
     def __repr__(self):
         return f'{self.pol}'
 
-    def _hx_j(self, j):
+    def _hx_j(self, j:int):
         soma = (1-2*(self.x - self.dominio[j])*(self.coef_lagrange[j][1].subs(self.x, self.dominio[j])))*(self.coef_lagrange[j][0])**2
         return simplify(soma)
 
-    def _hy_j(self, j):
+    def _hy_j(self, j:int):
         soma = (self.x-self.dominio[j])*(self.coef_lagrange[j][0])**2
         return simplify(soma)
 
