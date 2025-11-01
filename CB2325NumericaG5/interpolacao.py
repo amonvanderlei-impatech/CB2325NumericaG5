@@ -114,18 +114,7 @@ class Interpolacao:
         y_expr = self.pol
         y_lamb = lambdify(x_simb, y_expr, "numpy")
         
-        xmin, xmax, ymin, ymax = self.dominio[0], self.dominio[0], self.imagem[0], self.imagem[0]
-        for x in self.dominio:
-            if x < xmin:
-                xmin = x
-            if x > xmax:
-                xmax = x
-        for y in self.imagem:
-            if y < ymin:
-                ymin = y
-            if y > ymax:
-                ymax = y
-        
+        xmin, xmax, ymin, ymax = min(self.dominio), max(self.dominio), min(self.imagem), max(self.imagem)
         mini, maxi = min(xmin, ymin), max(xmax, ymax)
         
         ax.set_xlim(mini-1, maxi+1)
@@ -291,15 +280,7 @@ class InterpLinear(Interpolacao):
         ax.set_aspect("equal")
         precisao = precisao//(len(self.dominio) - 1)
         
-        xmin, xmax = self.pares_ord[0][0], self.pares_ord[len(self.pares_ord) - 1][0]
-        ymin, ymax = self.imagem[0], self.imagem[0]
-        
-        for y in self.imagem:
-            if y < ymin:
-                ymin = y
-            if y > ymax:
-                ymax = y
-                
+        xmin, xmax, ymin, ymax = self.pares_ord[0][0], self.pares_ord[len(self.pares_ord) - 1][0], min(self.imagem), max(self.imagem)
         mini, maxi = min(xmin, ymin), max(xmax, ymax)
         
         ax.set_xlim(mini-1, maxi+1)
