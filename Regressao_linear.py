@@ -4,24 +4,26 @@ def media(dado: list) -> float:
     Args:
         dado (list): Números (inteiros ou float).
 
+    Raises:
+        ValueError: A lista está vazia.    
+
     Returns:
         float: A média aritmética dos dados fornecidos.
     """    
 
     if len(dado) == 0:
 
-        return 0
-    
-    else:
-
-        soma = 0
-
-        for i in dado:
+        raise ValueError("A lista está vazia.")
 
 
-            soma += i
+    soma = 0
+
+    for i in dado:
+
+
+        soma += i
         
-        return float(soma/(len(dado)))
+    return float(soma/(len(dado)))
     
 
 def regressao_linear(valores_x:list, valores_y:list) -> tuple :
