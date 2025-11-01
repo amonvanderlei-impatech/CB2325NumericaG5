@@ -130,7 +130,10 @@ class Interpolacao:
         for i in range(len(self.dominio)):
                 x_ponto, y_ponto = self.dominio[i], self.imagem[i]
                 ax.plot(x_ponto, y_ponto, "o")
-            
+        
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.grid(True)
         show()
 
 
@@ -303,7 +306,10 @@ class InterpLinear(Interpolacao):
         for i in range(len(self.dominio)):
                 x_ponto, y_ponto = self.dominio[i], self.imagem[i]
                 ax.plot(x_ponto, y_ponto, "o")
-            
+        
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.grid(True)
         show()
 
 
