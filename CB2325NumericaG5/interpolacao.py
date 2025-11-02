@@ -107,6 +107,10 @@ class Interpolacao:
             precisao (int, opcional): número de pontos do polinomio a serem calculados. Padroniza em 100.
         """
         
+        #Garante que precisao seja do tipo int
+        if not isinstance(precisao, int):
+            raise TypeError("precisao deve ser do tipo int")
+
         #Preparação
         x_simb = symbols('x')
         _, ax = subplots()
@@ -279,6 +283,10 @@ class InterpLinear(Interpolacao):
             precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
         """
         
+        #Garante que precisao seja do tipo int
+        if not isinstance(precisao, int):
+            raise TypeError("precisao deve ser do tipo int")
+        
         #Preparação
         x_simb = symbols('x')
         _, ax = subplots()
@@ -394,3 +402,6 @@ class PoliHermite(Interpolacao):
 
         else:
             raise ValueError('Valores fora do intervalo do domínio não são bem aproximados')
+
+polinomio = PoliInterp([-2, -1, 0, 1, 2], [0, -1, 2, -3, 4])
+polinomio.grafico(0.5)
