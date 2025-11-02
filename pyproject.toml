@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "CB2325NumericaG5"
 dynamic = ["version"]
-dependencies = ["sympy"]
+dependencies = ["sympy""matplotlib", "numpy"]
 requires-python = ">=3.8"
 authors = [
     {name = "Amon Vanderlei", email = "al.amon.vanderlei@impatech.edu.br"},
