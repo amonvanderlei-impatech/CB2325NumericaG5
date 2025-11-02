@@ -1,3 +1,5 @@
+from graficos_regressao_linear import grafico_ajuste_linear, grafico_ajuste_polinomial 
+
 def media(dado: list) -> float:
     """Esta função retorna a média dos elementos da lista dada.
 
@@ -63,6 +65,7 @@ x = [0,1,2,3,4]
 y = [1.1,1.9,3.0,3.9,5.2]
 b,a = regressao_linear(x,y)
 print(f"y = {b:.2f}x + {a:.2f}")
+grafico_ajuste_linear(x,y,b,a)
 
 
 
@@ -284,6 +287,6 @@ bolha = [(1,2),(-1,-1),(0,8),(2,2),(5,8),
          (-3,2),(9,-9),(.12,-.04),(.09,-.009)]
 a = aproximacao_polinomial(bolha,3)
 print(a)
-a = txt_aproximacao_polinomial(bolha,3)
-print(a)
-
+polinomio_txt = txt_aproximacao_polinomial(bolha,3)
+print(polinomio_txt)
+grafico_ajuste_polinomial([e for e,ee in bolha],[ee for e,ee in bolha],a)
