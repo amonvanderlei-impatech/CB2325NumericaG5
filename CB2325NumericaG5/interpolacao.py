@@ -44,7 +44,7 @@ class Interpolacao:
     """
 
 
-    def __init__(self, dominio:list, imagem:list, imagem_derivada:list = None):
+    def __init__(self, dominio:list, imagem:list, imagem_derivada:Union[list, None] = None):
         # Garantimos que o domínio e a imagem são listas de pontos
         if not isinstance(dominio, list) or not isinstance(imagem, list):
             raise TypeError('`dominio` e `imagem` devem ser do tipo list')
