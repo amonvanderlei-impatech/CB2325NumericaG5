@@ -103,8 +103,11 @@ class Interpolacao:
         """
         Esboça o gráfico da classe Interpolacao
         
-        Argumentos:
+        Args:
             precisao (int, opcional): número de pontos do polinomio a serem calculados. Padroniza em 100.
+
+        Raises:
+            TypeError: se precisão não for do tipo int
         """
         
         #Garante que precisao seja do tipo int
@@ -281,6 +284,9 @@ class InterpLinear(Interpolacao):
         
         Argumentos:
             precisao (int): número de pontos do polinomio a serem calculados. Padroniza em 100.
+            
+        Raises:
+            TypeError: se precisão não for do tipo int
         """
         
         #Garante que precisao seja do tipo int
