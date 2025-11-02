@@ -28,11 +28,13 @@ def media(dado: list) -> float:
     return float(soma/(len(dado)))
     
 
-def regressao_linear(valores_x:list, valores_y:list) -> tuple :
+def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = True) -> tuple :
     """Calcula os coeficientes (angular,linear) da reta que melhor se ajusta aos dados.
     Args:
         valores_x (list): Coordenada x de cada ponto.
         valores_y (list): Coordenada y de cada ponto.
+        mostrar_grafico (bool, optional): Indica se o gráfico de dispersão e a reta de ajuste
+        devem ser exibidos automaticamente. Por padrão, é True.
 
     Raises:
         ValueError: A quantidade de abcissas deve ser igual à de ordenadas.
@@ -59,14 +61,15 @@ def regressao_linear(valores_x:list, valores_y:list) -> tuple :
 
     alpha_chapeu = media(valores_y) - beta_chapeu*media(valores_x)
 
+    if mostrar_grafico == True:
+        grafico_ajuste_linear(valores_x,valores_y,beta_chapeu,alpha_chapeu)
+
     return (beta_chapeu,alpha_chapeu)
 
 x = [0,1,2,3,4]
 y = [1.1,1.9,3.0,3.9,5.2]
 b,a = regressao_linear(x,y)
 print(f"y = {b:.2f}x + {a:.2f}")
-grafico_ajuste_linear(x,y,b,a)
-
 
 
 def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
@@ -185,12 +188,14 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
 
     return x #retorna [x,y,z,...]
 
-def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int) -> list:
+def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mostrar_grafico: bool = True) -> list:
     """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano. Retorna os coeficientes.
 
     Args:
         lista_de_coordenadas (list): Uma lista dos pontos cuja função vai aproximar.
         grau_do_polinomio (int): Qual tipo de polinômio a função retornará. 1 é linear, por exemplo.
+        mostrar_grafico (bool, optional): Indica se o gráfico de dispersão e a curva ajustada
+        devem ser exibidos automaticamente. Por padrão, é True.
 
     Raises:
         KeyError: Caso haja menos dados do que o número do grau do polinômio requerido, existirão infinitas "soluções". 
@@ -245,6 +250,9 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int) -> 
 
     vetor_solucao = resolvedor_de_sistemas(matriz_produto_valores_x,vetor_valores_y_do_sistema)
 
+    if mostrar_grafico == True:
+        grafico_ajuste_polinomial(valores_x,valores_y,vetor_solucao)
+
     return vetor_solucao
 
 
@@ -261,7 +269,7 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
     """    
     k = str()
 
-    a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio)
+    a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio, False) #não mostrar o gráfico 2 vezes
 
     for i in range(len(a)):
 
@@ -289,4 +297,4 @@ a = aproximacao_polinomial(bolha,3)
 print(a)
 polinomio_txt = txt_aproximacao_polinomial(bolha,3)
 print(polinomio_txt)
-grafico_ajuste_polinomial([e for e,ee in bolha],[ee for e,ee in bolha],a)
+
