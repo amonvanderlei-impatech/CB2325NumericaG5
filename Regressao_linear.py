@@ -33,14 +33,14 @@ def regressao_linear(valores_x:list, valores_y:list) -> tuple :
         valores_y (list): Coordenada y de cada ponto.
 
     Raises:
-        KeyError: A quantidade de abcissas deve ser igual à de ordenadas.
+        ValueError: A quantidade de abcissas deve ser igual à de ordenadas.
 
     Returns:
         tuple: Coeficientes da reta de regressão linear. (Coeficiente angular,Coeficiente linear)
     """
     if len(valores_x) != len(valores_y):
 
-        raise KeyError(" A quantidade de abcissas deve ser igual à de ordenadas.")
+        raise ValueError(" A quantidade de abcissas deve ser igual à de ordenadas.")
 
     den_beta_chapeu =  -len(valores_x)*(media(valores_x)*media(valores_x))
 
