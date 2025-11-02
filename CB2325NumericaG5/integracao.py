@@ -1,3 +1,22 @@
+"""
+Módulo de integração numérica — cálculo e visualização de integrais definidas.
+
+Este módulo fornece ferramentas para o cálculo numérico de integrais definidas
+de funções reais em um intervalo [a, b], utilizando dois métodos clássicos:
+- Regra dos Trapézios
+- Regra de Simpson (1/3)
+
+Além de realizar o cálculo, gera representações gráficas
+da área sob a curva, facilitando a visualização dos conceitos de integração.
+
+Exemplo de uso:
+---------------
+>>> from CB2325NumericaG5.integracao import integral
+>>> resultado = integral(lambda x: x**2, 0, 2, n=10, metodo="simpson", plot=True)
+>>> print(resultado)
+2.6667
+"""
+
 from typing import Callable, Union
 import matplotlib.pyplot as plt
 import numpy as np
