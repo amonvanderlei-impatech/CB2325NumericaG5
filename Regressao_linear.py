@@ -19,16 +19,42 @@ def media(dado: list) -> float:
 
     soma = sum(dado)
 
-    return float(soma/(len(dado)))
+    return float(soma/(len(dado))) #deixado float explícito aqui - não era necessário, mas fica mais claro
     
+def coeficiente_determinacao(valores_y:list, valores_y_ajustados:list) -> float:
+    """Calcula o coeficiente de determinação R² para avaliar a qualidade do ajuste.
 
-def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = True) -> tuple :
+    Args:
+        valores_y (list): Valores reais de y.
+        valores_y_ajustados (list): Valores ajustados de y pela regressão.
+
+    Raises:
+        ValueError: As listas de valores_y e valores_y_ajustados devem ter o mesmo tamanho.
+
+    Returns:
+        float: O coeficiente de determinação R².
+    """
+    if len(valores_y) != len(valores_y_ajustados):
+        raise ValueError("As listas de valores_y e valores_y_ajustados devem ter o mesmo tamanho.")
+
+    y_medio = media(valores_y)
+    soma_erros_quadrados = sum((y - valores_y_ajustados[i]) ** 2 for i, y in enumerate(valores_y))
+    soma_total_variacao = sum((y - y_medio) ** 2 for y in valores_y)
+
+    if soma_total_variacao == 0:
+        return 0.0
+
+    r_quadrado = 1 - (soma_erros_quadrados / soma_total_variacao)
+    return r_quadrado
+
+def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = True, coeficiente_determinacao_r: bool = True) -> tuple :
     """Calcula os coeficientes (angular,linear) da reta que melhor se ajusta aos dados.
     Args:
         valores_x (list): Coordenada x de cada ponto.
         valores_y (list): Coordenada y de cada ponto.
         mostrar_grafico (bool, optional): Indica se o gráfico de dispersão e a reta de ajuste
         devem ser exibidos automaticamente. Por padrão, é True.
+        coeficiente_determinacao_r (bool, optional): Indica se o coeficiente de determinação R² deve ser calculado e exibido no terminal. Por padrão, é True.
 
     Raises:
         ValueError: A quantidade de abcissas deve ser igual à de ordenadas.
@@ -46,7 +72,6 @@ def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = Tru
 
     for k in range(len(valores_x)):
 
-
         den_beta_chapeu += valores_x[k]*valores_x[k]
 
         num_beta_chapeu += valores_x[k]*valores_y[k]
@@ -55,8 +80,16 @@ def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = Tru
 
     alpha_chapeu = media(valores_y) - beta_chapeu*media(valores_x)
 
+    r_quadrado = coeficiente_determinacao(valores_y,[beta_chapeu*x + alpha_chapeu for x in valores_x])
+
     if mostrar_grafico == True:
-        grafico_ajuste_linear(valores_x,valores_y,beta_chapeu,alpha_chapeu)
+
+        grafico_ajuste_linear(valores_x,valores_y,beta_chapeu,alpha_chapeu,r_quadrado)
+    
+    if coeficiente_determinacao_r == True:
+
+        print(f"Coeficiente de Determinação R²: {r_quadrado:.2f}")
+    
 
     return (beta_chapeu,alpha_chapeu)
 
@@ -182,7 +215,7 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
 
     return x #retorna [x,y,z,...]
 
-def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mostrar_grafico: bool = True) -> list:
+def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mostrar_grafico: bool = True, coeficiente_determinacao_r: bool = True) -> list:
     """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano. Retorna os coeficientes.
 
     Args:
@@ -190,6 +223,7 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
         grau_do_polinomio (int): Qual tipo de polinômio a função retornará. 1 é linear, por exemplo.
         mostrar_grafico (bool, optional): Indica se o gráfico de dispersão e a curva ajustada
         devem ser exibidos automaticamente. Por padrão, é True.
+        coeficiente_determinacao_r (bool, optional): Indica se o coeficiente de determinação R² deve ser calculado e exibido no terminal. Por padrão, é True.
 
     Raises:
         KeyError: Caso haja menos dados do que o número do grau do polinômio requerido, existirão infinitas "soluções". 
@@ -244,8 +278,21 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
 
     vetor_solucao = resolvedor_de_sistemas(matriz_produto_valores_x,vetor_valores_y_do_sistema)
 
+    valores_y_ajustados = [
+        sum(vetor_solucao[i]*(x**i) for i in range(len(vetor_solucao))) 
+        for x in valores_x
+    ]
+
+    r_quadrado = coeficiente_determinacao(valores_y,valores_y_ajustados)
+
     if mostrar_grafico == True:
-        grafico_ajuste_polinomial(valores_x,valores_y,vetor_solucao)
+
+        grafico_ajuste_polinomial(valores_x, valores_y, vetor_solucao, r_quadrado)
+
+    if coeficiente_determinacao_r == True:
+
+        print(f"Coeficiente de Determinação R²: {r_quadrado:.2f}")
+    
 
     return vetor_solucao
 
@@ -263,7 +310,7 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
     """    
     k = str()
 
-    a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio, False) #não mostrar o gráfico 2 vezes
+    a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio, False, False) #não mostrar o gráfico e o R² duas vezes
 
     for i in range(len(a)):
 
