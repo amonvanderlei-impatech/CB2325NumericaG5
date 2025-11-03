@@ -93,11 +93,6 @@ def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = Tru
 
     return (beta_chapeu,alpha_chapeu)
 
-x = [0,1,2,3,4]
-y = [1.1,1.9,3.0,3.9,5.2]
-b,a = regressao_linear(x,y)
-print(f"y = {b:.2f}x + {a:.2f}")
-
 
 def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
     """Resolve Sistemas Lineares. Medios e grandes é por Gauss-Jordan.
@@ -330,11 +325,23 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
 
     return k
 
-bolha = [(1,2),(-1,-1),(0,8),(2,2),(5,8),
-         (-21,-44),(-17,-7),(13,4),(35,53),
-         (-3,2),(9,-9),(.12,-.04),(.09,-.009)]
-a = aproximacao_polinomial(bolha,3)
-print(a)
-polinomio_txt = txt_aproximacao_polinomial(bolha,3)
-print(polinomio_txt)
+
+
+
+
+##Testes Simples
+
+# x = [0,1,2,3,4]
+# y = [1.1,1.9,3.0,3.9,5.2]
+# b,a = regressao_linear(x,y)
+# print(f"y = {b:.2f}x + {a:.2f}")
+
+
+# bolha = [(1,2),(-1,-1),(0,8),(2,2),(5,8),
+#          (-21,-44),(-17,-7),(13,4),(35,53),
+#          (-3,2),(9,-9),(.12,-.04),(.09,-.009)]
+# a = aproximacao_polinomial(bolha,3)
+# print(a)
+# polinomio_txt = txt_aproximacao_polinomial(bolha,3)
+# print(polinomio_txt)
 
