@@ -262,7 +262,7 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
 
     Args:
         lista_de_coordenadas (list): Uma lista dos pontos cuja função vai aproximar.
-        grau_do_polin (_type_): Qual tipo de polinômio a função retornará. 1 é linear, por exemplo.
+        grau_do_polinomio (int): Qual tipo de polinômio a função retornará. 1 é linear, por exemplo.
 
     Returns:
         str: O polinômio na sua forma por extenso.
