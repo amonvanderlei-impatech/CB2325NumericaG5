@@ -17,14 +17,8 @@ def media(dado: list) -> float:
 
         raise ValueError("A lista está vazia.")
 
+    soma = sum(dado)
 
-    soma = 0
-
-    for i in dado:
-
-
-        soma += i
-        
     return float(soma/(len(dado)))
     
 
@@ -44,7 +38,7 @@ def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = Tru
     """
     if len(valores_x) != len(valores_y):
 
-        raise ValueError(" A quantidade de abcissas deve ser igual à de ordenadas.")
+        raise ValueError("A quantidade de abcissas deve ser igual à de ordenadas.")
 
     den_beta_chapeu =  -len(valores_x)*(media(valores_x)*media(valores_x))
 
