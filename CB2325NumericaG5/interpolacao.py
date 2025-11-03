@@ -17,6 +17,7 @@ from numpy import linspace, full_like
 from matplotlib.pyplot import show, subplots
 from typing import Union
 import numbers
+from math import inf
 
 
 class Interpolacao:
@@ -63,18 +64,18 @@ class Interpolacao:
 
         # Garantimos que o domínio é uma lista de números
         for i in dominio:
-            if not isinstance(i, numbers.Real):
-                raise TypeError('`dominio` deve ser uma lista de números')
+            if not isinstance(i, numbers.Real) or i == inf or i == -inf:
+                raise TypeError('`dominio` deve ser uma lista de números reais')
 
         # Garantimos que a imagem é uma lista de números
         for i in imagem:
-            if not isinstance(i, numbers.Real):
-                raise TypeError('`imagem` deve ser uma lista de números')
+            if not isinstance(i, numbers.Real) or i == inf or i == -inf:
+                raise TypeError('`imagem` deve ser uma lista de números reais')
 
         # Cria as variáveis internas
         self.x = symbols('x')
-        self.dominio = dominio
-        self.imagem = imagem
+        self.dominio = dominio[:]
+        self.imagem = imagem[:]
 
         if imagem_derivada is not None:
             # Garantimos que a imagem_derivada é uma lista de pontos
@@ -87,11 +88,11 @@ class Interpolacao:
 
             # Garantimos que a imagem_derivada é uma lista de números
             for i in imagem_derivada:
-                if not isinstance(i, numbers.Real):
-                    raise TypeError('`imagem_derivada` deve ser uma lista de números')
+                if not isinstance(i, numbers.Real) or i == inf or i == -inf:
+                    raise TypeError('`imagem_derivada` deve ser uma lista de números reais')
 
             # Cria uma variável interna
-            self.imagem_derivada = imagem_derivada
+            self.imagem_derivada = imagem_derivada[:]
 
     def __repr__(self):
         raise NotImplementedError
