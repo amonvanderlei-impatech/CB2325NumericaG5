@@ -122,7 +122,7 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
 
     Matriz_Aumentada = [Matriz_Coeficientes[e] + [Vetor_Independentes[e]] for e in range(len(Vetor_Independentes))]
 
-    def prod_linha(linha:list, produtado:float, div=False) -> None:
+    def prod_linha(linha:list, produtado:float, div=False) -> list[float]:
 
         auxiliar = [r for r in linha]
         if div == True:
@@ -141,7 +141,7 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
 
         return auxiliar
     
-    def soma_linha_linha(linha:list, somado:list, sub=False) -> None:
+    def soma_linha_linha(linha:list, somado:list, sub=False) -> list[float]:
 
         auxiliar = [r for r in linha]
 
@@ -246,7 +246,7 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
     matriz_valores_x = [[e**i for e in valores_x] for i in range(grau_do_polinomio+1)]
 
     #Feita a matriz de cada xis nos devidos graus para que o polinômio seja encontrado.
-    def produto_de_linhas(linha1:list, linha2:list) -> int: #Retorna o elemento da matriz resultado, quando se trata do produto de matrizes.
+    def produto_de_linhas(linha1:list, linha2:list) -> float: #Retorna o elemento da matriz resultado, quando se trata do produto de matrizes.
         """Executa uma operação entre listas do mesmo tamanho.
 
         Args:
@@ -256,9 +256,8 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
         Returns:
             int: O resultado do "produto interno" dos "vetores" fornecidos.
         """        
+        contador = 0
         if len(linha1) == len(linha2):
-
-            contador = 0
 
             for i in range(len(linha1)):
 
