@@ -318,7 +318,7 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
         if a[len(a)-1-i] > 0:
 
 
-            k+=f"+ {a[len(a)-1-i]:.3}*x^{len(a)-i-1} "
+            k+=f"({a[len(a)-1-i]:.3})x^{len(a)-i-1}"
 
         elif a[len(a)-1-i] == 0:
 
@@ -327,7 +327,7 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
         else:
 
 
-            k+=f" {a[len(a)-1-i]:.3}*x^{len(a)-i-1} "
+            k+=f" + ({a[len(a)-1-i]:.3})x^{len(a)-i-1} "
 
     return k
 
