@@ -1,1 +1,0 @@
-print("será devidamente commitado desta vez")
