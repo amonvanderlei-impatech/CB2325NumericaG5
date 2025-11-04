@@ -94,7 +94,7 @@ def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = Tru
     return (beta_chapeu,alpha_chapeu)
 
 
-def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
+def resolvedor_de_sistemas(MC:list, VI:list, tolerancia:float = 1e-11) -> list:
     """Resolve Sistemas Lineares. Medios e grandes é por Gauss-Jordan.
 
     Args:
@@ -136,7 +136,7 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
 
         return auxiliar
     
-    def soma_linha_linha(linha:list, somado:list, sub=False) -> list[float]:
+    def soma_linha_linha(linha:list, somado:list, sub:bool =False) -> list[float]:
 
         auxiliar = [r for r in linha]
 
@@ -210,7 +210,7 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia = 1e-11) -> list:
 
     return x #retorna [x,y,z,...]
 
-def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mostrar_grafico: bool = True, coeficiente_determinacao_r: bool = True) -> list:
+def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mostrar_grafico: bool = True, coeficiente_determinacao_r: bool = True) -> list[float]:
     """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano. Retorna os coeficientes.
 
     Args:
@@ -228,7 +228,7 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
     """    
     quantidade_de_pontos = len(lista_de_coordenadas)
 
-    if quantidade_de_pontos < grau_do_polinomio: #Condição necessária para que um polinômio seja encontrado.
+    if quantidade_de_pontos < grau_do_polinomio+1: #Condição necessária para que um polinômio seja encontrado.
 
         raise KeyError("A quantidade de dados deve ser maior ou igual ao grau do polinômio desejado.")
     #(
