@@ -14,7 +14,6 @@ def media(dado: list) -> float:
     """    
 
     if len(dado) == 0:
-
         raise ValueError("A lista está vazia.")
 
     soma = sum(dado)
@@ -45,6 +44,7 @@ def coeficiente_determinacao(valores_y:list, valores_y_ajustados:list) -> float:
         return 0.0
 
     r_quadrado = 1 - (soma_erros_quadrados / soma_total_variacao)
+
     return r_quadrado
 
 def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = True, coeficiente_determinacao_r: bool = True) -> tuple :
@@ -63,36 +63,26 @@ def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = Tru
         tuple: Coeficientes da reta de regressão linear. (Coeficiente angular,Coeficiente linear)
     """
     if len(valores_x) != len(valores_y):
-
         raise ValueError("A quantidade de abcissas deve ser igual à de ordenadas.")
 
     den_beta_chapeu =  -len(valores_x)*(media(valores_x)*media(valores_x))
-
     num_beta_chapeu =  -len(valores_x)*media(valores_x)*media(valores_y)
 
     for k in range(len(valores_x)):
-
         den_beta_chapeu += valores_x[k]*valores_x[k]
-
         num_beta_chapeu += valores_x[k]*valores_y[k]
     
     beta_chapeu = num_beta_chapeu/den_beta_chapeu
-
     alpha_chapeu = media(valores_y) - beta_chapeu*media(valores_x)
-
     r_quadrado = coeficiente_determinacao(valores_y,[beta_chapeu*x + alpha_chapeu for x in valores_x])
 
     if mostrar_grafico == True:
-
         grafico_ajuste_linear(valores_x,valores_y,beta_chapeu,alpha_chapeu,r_quadrado)
     
     if coeficiente_determinacao_r == True:
-
         print(f"Coeficiente de Determinação R²: {r_quadrado:.2f}")
     
-
     return (beta_chapeu,alpha_chapeu)
-
 
 def resolvedor_de_sistemas(MC:list, VI:list, tolerancia:float = 1e-11) -> list:
     """Resolve Sistemas Lineares. Medios e grandes é por Gauss-Jordan.
@@ -108,105 +98,67 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia:float = 1e-11) -> list:
     Returns:
         list: Lista do valor de cada incognita, caso venha na ordem MC = [[a_x + a_y + a_z + ...], [b_x + b_y+...], ...], a resposta virá em [x,y,z,...].
     """    
-
-    # Casos específicos, onde VI ==1 (igualdade direta). 2x2, 3x3, 4x4. Erro na qntd de coef e incognitas.
-
     Matriz_Coeficientes = list(MC)
-
     Vetor_Independentes = list(VI)
-
     Matriz_Aumentada = [Matriz_Coeficientes[e] + [Vetor_Independentes[e]] for e in range(len(Vetor_Independentes))]
 
     def prod_linha(linha:list, produtado:float, div=False) -> list[float]:
 
         auxiliar = [r for r in linha]
+
         if div == True:
-
             for r in range(len(linha)):
-
-
                 auxiliar[r] /= produtado
 
         else:
-
             for r in range(len(linha)):
-
-
                 auxiliar[r] *= produtado
 
         return auxiliar
     
     def soma_linha_linha(linha:list, somado:list, sub:bool =False) -> list[float]:
-
         auxiliar = [r for r in linha]
 
         if sub == True:
-
             for r in range(len(linha)):
-
-
                 auxiliar[r] -= somado[r]
 
         else:
-
             for r in range(len(linha)):
-
-
                 auxiliar[r] += somado[r]
         
         return auxiliar
 
     for kk in range(len(Vetor_Independentes)):
-
-        
         linhas_trocadas = False
-
         if abs(Matriz_Aumentada[kk][kk]) <= tolerancia:
-
             for j in  range(kk+1, len(Vetor_Independentes)):
-
-
                 if abs(Matriz_Aumentada[j][kk]) > tolerancia:
-
                     Matriz_Aumentada[j], Matriz_Aumentada[kk] = Matriz_Aumentada[kk], Matriz_Aumentada[j]
-
                     linhas_trocadas = True
-
                     break
 
             if linhas_trocadas == False:
-
-                raise ValueError
+                raise ValueError ("Sistema sem solução unica.")
 
         e = Matriz_Aumentada[kk][kk]
-
         transicao = list(Matriz_Aumentada[kk])
-
         Matriz_Aumentada[kk] = prod_linha(transicao, e, True) #Divide aquela linha pelo elemento da diagonal.
 
         for i in range(kk+1, len(Vetor_Independentes)): #Processo de triangulação
-
             if abs(Matriz_Aumentada[i][kk]) <= tolerancia:
-
                 Matriz_Aumentada[i][kk] = 0
-
                 continue
-            
             variavel_de_suporte1 = Matriz_Aumentada[i][kk]
-
             variavel_de_suporte2 = prod_linha(Matriz_Aumentada[kk], variavel_de_suporte1)
-
             Matriz_Aumentada[i] = soma_linha_linha(Matriz_Aumentada[i], variavel_de_suporte2, True)
 
     #A partir daqui já temos uma matriz triangular superior.
     x = [0 for i in range(len(Vetor_Independentes))]
 
     for i in reversed(range(len(Vetor_Independentes))):
-
         soma = sum(Matriz_Aumentada[i][j] * x[j] for j in range(i + 1, len(Vetor_Independentes)))
-
         x[i] = (Matriz_Aumentada[i][-1] - soma) / Matriz_Aumentada[i][i]
-
 
     return x #retorna [x,y,z,...]
 
@@ -229,13 +181,10 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
     quantidade_de_pontos = len(lista_de_coordenadas)
 
     if quantidade_de_pontos < grau_do_polinomio+1: #Condição necessária para que um polinômio seja encontrado.
-
         raise KeyError("A quantidade de dados deve ser maior ou igual ao grau do polinômio desejado.")
     #(
     valores_x = [e for e,ee in lista_de_coordenadas]
-
     valores_y = [ee for e,ee in lista_de_coordenadas]
-
     # )Isola cada conjunto de dados de cada coordenada num vetor.
 
     matriz_valores_x = [[e**i for e in valores_x] for i in range(grau_do_polinomio+1)]
@@ -253,25 +202,16 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
         """        
         contador = 0
         if len(linha1) == len(linha2):
-
             for i in range(len(linha1)):
-
-
-
                 contador += linha1[i]*linha2[i]
 
         return contador
 
     matriz_produto_valores_x = [[produto_de_linhas(matriz_valores_x[i],matriz_valores_x[ii]) for i in range(len(matriz_valores_x))] for ii in range(len(matriz_valores_x[0])+1 - len(valores_x)+grau_do_polinomio)] #Menos um ou menos 2? Talvez 1 - (quantidade de dados - grau do polinomio)
-
-
     #A matriz que define o sistema de equações que deve ser resolvido. A outra é:
 
     vetor_valores_y_do_sistema = [produto_de_linhas(valores_y,matriz_valores_x[i]) for i in range(len(matriz_valores_x))]
-
-
     vetor_solucao = resolvedor_de_sistemas(matriz_produto_valores_x,vetor_valores_y_do_sistema)
-
     valores_y_ajustados = [
         sum(vetor_solucao[i]*(x**i) for i in range(len(vetor_solucao))) 
         for x in valores_x
@@ -280,14 +220,11 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
     r_quadrado = coeficiente_determinacao(valores_y,valores_y_ajustados)
 
     if mostrar_grafico == True:
-
         grafico_ajuste_polinomial(valores_x, valores_y, vetor_solucao, r_quadrado)
 
     if coeficiente_determinacao_r == True:
-
         print(f"Coeficiente de Determinação R²: {r_quadrado:.2f}")
     
-
     return vetor_solucao
 
 
@@ -303,45 +240,18 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
         str: O polinômio na sua forma por extenso.
     """    
     k = str()
-
     a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio, False, False) #não mostrar o gráfico e o R² duas vezes
 
     for i in range(len(a)):
-
-
         if a[len(a)-1-i] > 0:
-
-
             k+=f"({a[len(a)-1-i]:.3})x^{len(a)-i-1}"
-
         elif a[len(a)-1-i] == 0:
-
             continue
-
         else:
-
-
             k+=f" + ({a[len(a)-1-i]:.3})x^{len(a)-i-1} "
 
     return k
 
 
 
-
-
-##Testes Simples
-
-# x = [0,1,2,3,4]
-# y = [1.1,1.9,3.0,3.9,5.2]
-# b,a = regressao_linear(x,y)
-# print(f"y = {b:.2f}x + {a:.2f}")
-
-
-# bolha = [(1,2),(-1,-1),(0,8),(2,2),(5,8),
-#          (-21,-44),(-17,-7),(13,4),(35,53),
-#          (-3,2),(9,-9),(.12,-.04),(.09,-.009)]
-# a = aproximacao_polinomial(bolha,3)
-# print(a)
-# polinomio_txt = txt_aproximacao_polinomial(bolha,3)
-# print(polinomio_txt)
 
