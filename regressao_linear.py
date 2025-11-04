@@ -12,7 +12,6 @@ def media(dado: list) -> float:
     Returns:
         float: A média aritmética dos dados fornecidos.
     """    
-
     if len(dado) == 0:
         raise ValueError("A lista está vazia.")
 
@@ -139,7 +138,7 @@ def resolvedor_de_sistemas(MC:list, VI:list, tolerancia:float = 1e-11) -> list:
                     break
 
             if linhas_trocadas == False:
-                raise ValueError ("Sistema sem solução unica.")
+                raise ValueError ("Sistema sem solução única.")
 
         e = Matriz_Aumentada[kk][kk]
         transicao = list(Matriz_Aumentada[kk])
@@ -226,8 +225,6 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
         print(f"Coeficiente de Determinação R²: {r_quadrado:.2f}")
     
     return vetor_solucao
-
-
 
 def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int) -> str:
     """Utiliza MMQ para fazer a regressão polinomial dos pontos dados. Tudo no plano. Retorna o polinômio.
