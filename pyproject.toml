@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "CB2325NumericaG5"
+dynamic = ["version"]
+dependencies = ["sympy", "matplotlib", "numpy"]
+requires-python = ">=3.8"
+authors = [
+    {name = "Amon Vanderlei", email = "al.amon.vanderlei@impatech.edu.br"},
+    {name = "André Oliveira", email = "al.andre.oliveira@impatech.edu.br"},
+    {name = "Carlos Santos", email = "al.carlos.santos@impatech.edu.br"},
+    {name = "Davi Campos", email = "al.davi.campos@impatech.edu.br"},
+    {name = "Felipe Frohlich", email = "al.felipe.frohlich@impatech.edu.br"},
+    {name = "Gabriel Dias", email = "al.gabriel.dias@impatech.edu.br"},
+    {name = "Lisandra Fagundes", email = "al.lisandra.fagundes@impatech.edu.br"},
+    {name = "Lucas Corazza", email = "al.lucas.corazza@impatech.edu.br"},
+    {name = "Lucas Oliveira", email = "al.lucas.oliveira@impatech.edu.br"},
+    {name = "Nicole Freire", email = "al.nicole.freire@impatech.edu.br"},
+]
+description = "Biblioteca de cálculo numérico, contendo funcionalidades clássicas de análise numérica e recursos gráficos para visualização de resultados."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE*"]
+keywords = ["Cálculo numérico", "Análise numérica"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+
+[tool.setuptools]
+packages = ["CB2325NumericaG5"]
