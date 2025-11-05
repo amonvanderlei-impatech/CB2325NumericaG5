@@ -249,6 +249,3 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
 
     return k
 
-
-
-

@@ -58,38 +58,3 @@ def grafico_ajuste_polinomial(valores_x:list, valores_y:list, coeficientes:list,
     plt.legend()
     plt.grid(True)
     plt.show()
-
-
-
-
-
-#Versão sem numpy - a curva polinomial ajustada fica mais discreta, e menos parecida com um polinômio suave.
-
-# def grafico_ajuste_polinomial(valores_x:list, valores_y:list, coeficientes:list) -> None:
-#     """Gera o gráfico de dispersão dos pontos e a curva de ajuste polinomial.
-#     Args:
-#         valores_x (list): Coordenada x de cada ponto.
-#         valores_y (list): Coordenada y de cada ponto.
-#         coeficientes (list): Coeficientes do polinômio de ajuste.
-#     """
-#     plt.scatter(valores_x, valores_y, color='blue', label='Pontos de dados')
-
-#     intervalo_x = sorted(valores_x) #ordena os valores de x para um gráfico suave
-
-#     valores_y_ajustados = []
-#     #calcula e adiciona os valores de y ajustados usando a expressão do polinomio 
-#     for x in intervalo_x:
-#         y=0
-#         for i in range(len(coeficientes)):
-#             y += coeficientes[i] * (x ** i)
-#         valores_y_ajustados.append(y)
-
-#     plt.plot(intervalo_x, valores_y_ajustados, color='red', label='Curva de Ajuste Polinomial')
-
-#     plt.xlabel('Valores X')
-#     plt.ylabel('Valores Y')
-#     plt.title('Ajuste Polinomial')
-#     plt.legend()
-#     plt.grid(True)
-#     plt.show()
-#     return None
