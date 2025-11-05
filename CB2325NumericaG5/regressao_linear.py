@@ -1,4 +1,4 @@
-from graficos_regressao_linear import grafico_ajuste_linear, grafico_ajuste_polinomial 
+from CB2325NumericaG5.graficos_regressao_linear import grafico_ajuste_linear, grafico_ajuste_polinomial 
 
 def media(dado: list) -> float:
     """Esta função retorna a média dos elementos da lista dada.
