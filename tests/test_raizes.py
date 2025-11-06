@@ -1,7 +1,3 @@
-import sympy as sp
-from typing import Callable
-import numpy as np
-import matplotlib.pyplot as plt
 import math
 import sys
 import os
