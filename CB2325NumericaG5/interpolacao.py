@@ -17,7 +17,7 @@ from numpy import linspace, full_like
 from matplotlib.pyplot import show, subplots
 from typing import Union
 import numbers
-from math import inf
+import math
 
 
 class Interpolacao:
@@ -32,7 +32,7 @@ class Interpolacao:
 
     Raises:
         TypeError: Se `dominio`, `imagem` (ou `imagem_derivada`, quando fornecida) não for do tipo list,
-            ou se algum elemento das listas não for um número real.
+            ou se algum elemento das listas não for um número real (verifica math.inf e math.nan).
         ValueError: Se `dominio` e `imagem` tiverem comprimentos diferentes, se `imagem_derivada`
             tiver comprimento diferente, se `dominio` contiver valores repetidos ou
             se `dominio` tiver menos de 2 pontos.
@@ -64,13 +64,21 @@ class Interpolacao:
 
         # Garantimos que o domínio é uma lista de números
         for i in dominio:
-            if not isinstance(i, numbers.Real) or i == inf or i == -inf:
+            if not isinstance(i, numbers.Real):
                 raise TypeError('`dominio` deve ser uma lista de números reais')
+            if math.isinf(i):
+                raise TypeError('`dominio` contém infinito')
+            if math.isnan(i):
+                raise TypeError('`dominio` contém NaN')
 
         # Garantimos que a imagem é uma lista de números
         for i in imagem:
-            if not isinstance(i, numbers.Real) or i == inf or i == -inf:
+            if not isinstance(i, numbers.Real):
                 raise TypeError('`imagem` deve ser uma lista de números reais')
+            if math.isinf(i):
+                raise TypeError('`imagem` contém infinito')
+            if math.isnan(i):
+                raise TypeError('`imagem` contém NaN')
 
         # Cria as variáveis internas
         self.x = symbols('x')
@@ -88,8 +96,12 @@ class Interpolacao:
 
             # Garantimos que a imagem_derivada é uma lista de números
             for i in imagem_derivada:
-                if not isinstance(i, numbers.Real) or i == inf or i == -inf:
+                if not isinstance(i, numbers.Real):
                     raise TypeError('`imagem_derivada` deve ser uma lista de números reais')
+                if math.isinf(i):
+                    raise TypeError('`imagem_derivada` contém infinito')
+                if math.isnan(i):
+                    raise TypeError('`imagem_derivada` contém NaN')
 
             # Cria uma variável interna
             self.imagem_derivada = imagem_derivada[:]
