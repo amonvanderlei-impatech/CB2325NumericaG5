@@ -67,18 +67,18 @@ class Interpolacao:
             if not isinstance(i, numbers.Real):
                 raise TypeError('`dominio` deve ser uma lista de números reais')
             if math.isinf(i):
-                raise TypeError('`dominio` contém infinito')
+                raise ValueError('`dominio` contém infinito')
             if math.isnan(i):
-                raise TypeError('`dominio` contém NaN')
+                raise ValueError('`dominio` contém NaN')
 
         # Garantimos que a imagem é uma lista de números
         for i in imagem:
             if not isinstance(i, numbers.Real):
                 raise TypeError('`imagem` deve ser uma lista de números reais')
             if math.isinf(i):
-                raise TypeError('`imagem` contém infinito')
+                raise ValueError('`imagem` contém infinito')
             if math.isnan(i):
-                raise TypeError('`imagem` contém NaN')
+                raise ValueError('`imagem` contém NaN')
 
         # Cria as variáveis internas
         self.x = symbols('x')
@@ -99,9 +99,9 @@ class Interpolacao:
                 if not isinstance(i, numbers.Real):
                     raise TypeError('`imagem_derivada` deve ser uma lista de números reais')
                 if math.isinf(i):
-                    raise TypeError('`imagem_derivada` contém infinito')
+                    raise ValueError('`imagem_derivada` contém infinito')
                 if math.isnan(i):
-                    raise TypeError('`imagem_derivada` contém NaN')
+                    raise ValueError('`imagem_derivada` contém NaN')
 
             # Cria uma variável interna
             self.imagem_derivada = imagem_derivada[:]
