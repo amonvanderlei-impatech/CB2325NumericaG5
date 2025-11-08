@@ -192,3 +192,122 @@ class TestInterpLinear:
         imagem = [0, 1, 4]
         interp = InterpLinear(dominio, imagem)
         interp.grafico(precisao=10)
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from CB2325NumericaG5.interpolacao import PoliInterp
+
+
+class TestPoliInterp:
+    @pytest.mark.parametrize(
+        "dominio, imagem",
+        [
+            ([0, 1, 2], [1, 3, 7]),   # f(x) = x² + 2x + 1
+            ([0, 1, 2, 3], [1, 2, 5, 10])
+        ]
+    )
+    def test_interp_polinomial_valida(self, dominio, imagem):
+        interp = PoliInterp(dominio, imagem)
+        assert math.isclose(interp(dominio[0]), imagem[0], rel_tol=1e-12)
+        assert math.isclose(interp(dominio[-1]), imagem[-1], rel_tol=1e-12)
+
+        # Testa extrapolação fora do domínio
+        with pytest.raises(ValueError, match="fora do intervalo"):
+            interp(min(dominio) - 10)
+
+    @pytest.mark.parametrize(
+        "dominio, imagem",
+        [
+            ([], [1, 2, 3]),
+            ([0, 1, 2], []),
+            ([0, 1], [1]),
+            ([0], [0]),
+        ]
+    )
+    def test_interp_polinomial_invalida_valor(self, dominio, imagem):
+        with pytest.raises(ValueError):
+            PoliInterp(dominio, imagem)
+
+    @pytest.mark.parametrize(
+        "dominio, imagem",
+        [
+            ("a", [1]),
+            ([1], "a"),
+            (1, 1),
+        ]
+    )
+    def test_interp_polinomial_invalida_tipo(self, dominio, imagem):
+        with pytest.raises(TypeError):
+            PoliInterp(dominio, imagem)
+
+    def test_nao_ordenado(self):
+        dominio = [3, 1, 2]
+        imagem = [10, 2, 5]
+        interp = PoliInterp(dominio, imagem)
+        assert list(interp.pares_ord) == [(1, 2), (2, 5), (3, 10)]
+
+    def test_pontos_repetidos(self):
+        dominio = [0, 1, 1, 2]
+        imagem = [0, 1, 2, 3]
+        with pytest.raises(ValueError, match="repetidos"):
+            PoliInterp(dominio, imagem)
+
+    def test_interpolacao_polinomial(self):
+        dominio = [0, 1, 2]
+        imagem = [1, 3, 7]  # f(x)=x²+2x+1
+        interp = PoliInterp(dominio, imagem)
+        assert math.isclose(interp(1.5), 1.5**2 + 2*1.5 + 1, rel_tol=1e-9)
+
+    def test_call_tipo_errado(self):
+        dominio = [0, 1]
+        imagem = [0, 1]
+        interp = PoliInterp(dominio, imagem)
+        with pytest.raises(ValueError):
+            interp("a")  
+
+    def test_simbolo_no_call(self):
+        dominio = [0, 1, 2]
+        imagem = [0, 1, 4]
+        interp = PoliInterp(dominio, imagem)
+        with pytest.raises(ValueError):
+            interp(Symbol("x"))  # type: ignore
+
+    def test_dados_inalterados(self):
+        dominio = [0, 1, 2]
+        imagem = [0, 1, 4]
+        interp = PoliInterp(dominio, imagem)
+        dominio.append(3)
+        imagem.append(9)
+        assert len(interp.dominio) == 3
+        assert len(interp.imagem) == 3
+
+    def test_pontos_muito_proximos(self):
+        dominio = [0.0, 1e-10, 2e-10]
+        imagem = [0.0, 1.0, 4.0]
+        interp = PoliInterp(dominio, imagem)
+        r = interp(1e-10)
+        assert abs(r - 1.0) < 1e-6
+
+    def test_nan_e_inf(self):
+        casos = [
+            ([0, math.inf, 2], [0, 1, 4]),
+            ([0, 1, 2], [0, math.inf, 4]),
+            ([0, 1, 2], [0, math.nan, 4])
+        ]
+        for dominio, imagem in casos:
+            with pytest.raises(ValueError):
+                PoliInterp(dominio, imagem)
+
+    def test_igualdade_instancias(self):
+        dominio = [0, 1, 2]
+        imagem = [0, 1, 4]
+        interp1 = PoliInterp(dominio, imagem)
+        interp2 = PoliInterp(dominio, imagem)
+        assert interp1(1.5) == pytest.approx(interp2(1.5))
+
+    def test_grafico_roda_sem_erro(self):
+        dominio = [0, 1, 2]
+        imagem = [0, 1, 4]
+        interp = PoliInterp(dominio, imagem)
+        interp.grafico(precisao=10)
+
