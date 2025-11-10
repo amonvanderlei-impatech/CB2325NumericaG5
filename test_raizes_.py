@@ -54,8 +54,54 @@ def proximo(a,b,tol):
                 if abs(abs(a)-(abs(b+i*3.14)))<1:
                     return True
         for i in range(30):
-            if (abs(a) - 3.14*i)<.01: #A função seno aparece com pi.
+            if (abs(a) - 3.14*i)<.01: #A função seno aparece com pi. E admite algumas raizes.
                 if b ==0:
                     return True
         else:
             return False
+        
+
+@pytest.mark.parametrize("pontoi", [
+    -1000000,
+    -1000,
+    -100.0001,
+    -1,
+    -.001,
+    0,
+    1.001,
+    1,
+    100.0001,
+    1000,
+    1000000
+])
+@pytest.mark.parametrize("funcao, raiz_esperada", [
+    (pol1, 2.5),
+    (pol2, 4.0),
+    (polfract, -1),
+    (exponencial, 0),
+    (polpeq1, 2.5),
+    (polpeq2, 4),
+    (polfractpeq, -1),
+    (exponencialpeq, 0),
+    (polgran1, 2.5),
+    (polgran2, 4.0),
+    (polfractgra, -1),
+    (exponencialgran, 0),
+    (pol_duas_raizes, 1),
+    (seno, 0),
+    (cosseno, 1.57079632679489661923123169163)
+])
+def test_newton_raizes(funcao, raiz_esperada, pontoi):
+    try:
+        resultado = rz.newton(funcao, pontoi, plot=False)
+        assert proximo(resultado,raiz_esperada, 1e-3), \
+            f"Esperado {raiz_esperada}, obtido {resultado}"
+
+
+    except Exception as e:
+        # Se for erro de derivada nula → skip (condição esperada)
+        if "derivada" in str(e).lower() or "zero" in str(e).lower():
+            pytest.skip(f"Derivada nula em ponto inicial {pontoi}, teste ignorado: {e}")
+        else:
+            pytest.fail(f"Falhou ({funcao(0)}) para ponto inicial {pontoi}: {e}")
+
