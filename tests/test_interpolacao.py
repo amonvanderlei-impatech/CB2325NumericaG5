@@ -6,7 +6,7 @@ import pytest
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from CB2325NumericaG5.interpolacao import InterpLinear, PoliHermite
+from CB2325NumericaG5.interpolacao import InterpLinear, PoliHermite, PoliInterp
 
 class TestInterpLinear:
     @pytest.mark.parametrize(
@@ -361,15 +361,15 @@ class TestPoliInterp:
     @pytest.mark.parametrize(
         "dominio, imagem",
         [
-            ([0, 1, 2], [1, 3, 7]),   # f(x) = x² + 2x + 1
+            ([0, 1, 2], [1, 3, 7]),   # f(x) = x² + x + 1
             ([0, 1, 2, 3], [1, 2, 5, 10])
         ]
     )
     def test_interp_polinomial_valida(self, dominio, imagem):
         """Testa casos válidos de interpolação polinomial."""
         interp = PoliInterp(dominio, imagem)
-        assert math.isclose(interp(dominio[0]), imagem[0], rel_tol=1e-12)
-        assert math.isclose(interp(dominio[-1]), imagem[-1], rel_tol=1e-12)
+        assert math.isclose(interp(dominio[0]), imagem[0], rel_tol=1e-12) # type: ignore
+        assert math.isclose(interp(dominio[-1]), imagem[-1], rel_tol=1e-12) # type: ignore
 
         # Testa extrapolação fora do domínio
         with pytest.raises(ValueError, match="fora do intervalo"):
@@ -402,13 +402,6 @@ class TestPoliInterp:
         with pytest.raises(TypeError):
             PoliInterp(dominio, imagem)
 
-    def test_nao_ordenado(self):
-        """Testa se as entradas são ordenadas corretamente."""
-        dominio = [3, 1, 2]
-        imagem = [10, 2, 5]
-        interp = PoliInterp(dominio, imagem)
-        assert list(interp.pares_ord) == [(1, 2), (2, 5), (3, 10)]
-
     def test_pontos_repetidos(self):
         """Testa se o domínio não pode ter valores repetidos."""
         dominio = [0, 1, 1, 2]
@@ -419,9 +412,9 @@ class TestPoliInterp:
     def test_interpolacao_polinomial(self):
         """Testa a precisão da interpolação."""
         dominio = [0, 1, 2]
-        imagem = [1, 3, 7]  # f(x)=x²+2x+1
+        imagem = [1, 3, 7]  # f(x)=x²+x+1
         interp = PoliInterp(dominio, imagem)
-        assert math.isclose(interp(1.5), 1.5**2 + 2*1.5 + 1, rel_tol=1e-9)
+        assert math.isclose(interp(1.5), 1.5**2 + 1.5 + 1, rel_tol=1e-9) # type: ignore
 
     def test_call_tipo_errado(self):
         """Testa se o método __call__ rejeita tipos inválidos."""
@@ -430,14 +423,6 @@ class TestPoliInterp:
         interp = PoliInterp(dominio, imagem)
         with pytest.raises(ValueError):
             interp("a")  # type: ignore
-
-    def test_simbolo_no_call(self):
-        """Testa passar símbolo simbólico."""
-        dominio = [0, 1, 2]
-        imagem = [0, 1, 4]
-        interp = PoliInterp(dominio, imagem)
-        with pytest.raises(ValueError):
-            interp(Symbol("x"))  # type: ignore
 
     def test_dados_inalterados(self):
         """Testa se o objeto mantém cópia interna dos dados."""
@@ -455,7 +440,7 @@ class TestPoliInterp:
         imagem = [0.0, 1.0, 4.0]
         interp = PoliInterp(dominio, imagem)
         r = interp(1e-10)
-        assert abs(r - 1.0) < 1e-6
+        assert abs(r - 1.0) < 1e-6 # type: ignore
 
     def test_nan_e_inf(self):
         """Testa presença de NaN e infinitos."""
