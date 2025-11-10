@@ -48,8 +48,8 @@ def teste_constante(funcao, a, b, esperado, metodo):
         (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
     ]
 )
-def teste_constante(funcao, a, b, esperado, metodo):
-    """Teste da integral de funções constantes"""
+def teste_erros(funcao, a, b, esperado, metodo):
+    """Teste da integral de erros/retornos esperados"""
     resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
     assert resultado == esperado
 
@@ -63,8 +63,8 @@ def teste_constante(funcao, a, b, esperado, metodo):
         (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
     ]
 )
-def teste_constante(funcao, a, b, esperado, metodo):
-    """Teste da integral de funções constantes"""
+def teste_pontos(funcao, a, b, esperado, metodo):
+    """Teste da integral de pontos"""
     resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
     assert resultado == esperado
 
@@ -78,8 +78,8 @@ def teste_constante(funcao, a, b, esperado, metodo):
         (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
     ]
 )
-def teste_constante(funcao, a, b, esperado, metodo):
-    """Teste da integral de funções constantes"""
+def teste_intervalos_invertidos(funcao, a, b, esperado, metodo):
+    """Teste da integral de intervalos invertidos"""
     resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
     assert resultado == esperado
 
@@ -93,8 +93,8 @@ def teste_constante(funcao, a, b, esperado, metodo):
         (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
     ]
 )
-def teste_constante(funcao, a, b, esperado, metodo):
-    """Teste da integral de funções constantes"""
+def teste_pares_impares(funcao, a, b, esperado, metodo):
+    """Teste da integral de funções pares e ímpares"""
     resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
     assert resultado == esperado
 
@@ -108,7 +108,7 @@ def teste_constante(funcao, a, b, esperado, metodo):
         (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
     ]
 )
-def teste_constante(funcao, a, b, esperado, metodo):
-    """Teste da integral de funções constantes"""
+def teste_graficos(funcao, a, b, esperado, metodo):
+    """Testes dos gráficos da integral"""
     resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
     assert resultado == esperado
