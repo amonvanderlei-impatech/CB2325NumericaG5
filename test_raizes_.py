@@ -148,3 +148,27 @@ def test_raizes(funcao,raiz,nome):
     assert logo_ali(resultado,raiz, 1e-3), \
         f"Esperado {raiz}, obtido {resultado}"
 
+def test_graficos():
+    r1 = rz.raiz(
+        f1,
+        -10,10,10,
+        method="newton",
+        )
+    assert logo_ali(r1,5,1e-3), \
+        f"Esperado {5}, obtido {r1}"
+   
+    r2 = rz.raiz(
+        f1,
+        -10,10,10,
+        method="bissecao",
+        )
+    assert logo_ali(r2,5,1e-3), \
+        f"Esperado {5}, obtido {r2}"
+   
+    r3 = rz.raiz(
+        f1,
+        -10,10,10,
+        method="secante",
+        )
+    assert logo_ali(r3,5,1e-3), \
+        f"Esperado {5}, obtido {r3}"
