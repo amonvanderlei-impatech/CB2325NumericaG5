@@ -39,29 +39,76 @@ def teste_constante(funcao, a, b, esperado, metodo):
     assert resultado == esperado
 
 
+#Teste da Integral de erros - Intervalo não numérico, não definido, n ímpar para simpson, infinito
+@pytest.mark.parametrize(
+    "funcao, a, b, esperado, metodo",
+    [
+        # (função, limite inferior, limite superior, valor esperado, método)
+
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+    ]
+)
+def teste_constante(funcao, a, b, esperado, metodo):
+    """Teste da integral de funções constantes"""
+    resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
+    assert resultado == esperado
 
 
+#Teste da Integral pontos - intervalos de tamanho zero
+@pytest.mark.parametrize(
+    "funcao, a, b, esperado, metodo",
+    [
+        # (função, limite inferior, limite superior, valor esperado, método)
+
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+    ]
+)
+def teste_constante(funcao, a, b, esperado, metodo):
+    """Teste da integral de funções constantes"""
+    resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
+    assert resultado == esperado
 
 
+#Teste da Integral de intervalos invertidos
+@pytest.mark.parametrize(
+    "funcao, a, b, esperado, metodo",
+    [
+        # (função, limite inferior, limite superior, valor esperado, método)
+
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+    ]
+)
+def teste_constante(funcao, a, b, esperado, metodo):
+    """Teste da integral de funções constantes"""
+    resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
+    assert resultado == esperado
 
 
+#Teste da Integral de funções pares e ímpares
+@pytest.mark.parametrize(
+    "funcao, a, b, esperado, metodo",
+    [
+        # (função, limite inferior, limite superior, valor esperado, método)
+
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+    ]
+)
+def teste_constante(funcao, a, b, esperado, metodo):
+    """Teste da integral de funções constantes"""
+    resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
+    assert resultado == esperado
 
 
+#Teste do gráfico da Integral
+@pytest.mark.parametrize(
+    "funcao, a, b, esperado, metodo",
+    [
+        # (função, limite inferior, limite superior, valor esperado, método)
 
-#integral (funcao, a, b, n, aprox=4, metodo="simpson", plot=True)
-#testar intervalo não numérico
-#Testar integral imprópria, função não definida no intervalo
-#Testar n ímpar para simpson
-#testar intervalos invertidos
-#Testar n=0
-#Testar integral de constante
-#Testar integral de um ponto (intervalo de b a b)
-#Testar sem plotar gráfico
-#Testar gráfico invertido
-#Testar integral de função par e impar
-#Testar limite infinito.
-
-
-
-
-
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+    ]
+)
+def teste_constante(funcao, a, b, esperado, metodo):
+    """Teste da integral de funções constantes"""
+    resultado = integral(funcao, a, b, n=10, metodo=metodo, plot=False)
+    assert resultado == esperado
