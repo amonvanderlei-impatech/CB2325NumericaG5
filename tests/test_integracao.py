@@ -131,8 +131,10 @@ def test_limites_nao_numericos():
 
 
 def test_simpson_n_impar():
-    # Sua função deve levantar ValueError se n for ímpar
     with pytest.raises(ValueError):
         integral(lambda x: x**2, 0, 1, 9, metodo="simpson", plot=False)
 
 
+def test_divisao_zero():
+    with pytest.raises(ZeroDivisionError):
+        integral(lambda x: 23/x, 0, 1, 0, metodo="trapezios", plot=False)
