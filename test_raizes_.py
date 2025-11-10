@@ -45,18 +45,23 @@ def proximo(a,b,tol):
         if abs(a) == 1 or abs(b) == 1: #A função duas raizes admite duas raizes.
             if abs(abs(a)-abs(b)) < tol:
                 return True
+            
         if abs(a-b) < tol:
             return True
-        if b == 1.57079632679489661923123169163: #A função cosseno admite os dois sinais.
-            if abs(abs(a)-abs(b))<tol:
+        
+        if b == 1.57079632679489661923123169163: #Identifica que a função é a cosseno.
+            if abs(abs(a)-abs(b))<tol:#A função cosseno admite os dois sinais.
                 return True
-            for i in range(10):
+            
+            for i in range(10): #A função cosseno adimite mais de uma raiz também.
                 if abs(abs(a)-(abs(b+i*3.14)))<1:
                     return True
+                
         for i in range(30):
             if (abs(a) - 3.14*i)<.01: #A função seno aparece com pi. E admite algumas raizes.
                 if b ==0:
                     return True
+                
         else:
             return False
         
@@ -97,11 +102,49 @@ def test_newton_raizes(funcao, raiz_esperada, pontoi):
         assert proximo(resultado,raiz_esperada, 1e-3), \
             f"Esperado {raiz_esperada}, obtido {resultado}"
 
-
     except Exception as e:
         # Se for erro de derivada nula → skip (condição esperada)
         if "derivada" in str(e).lower() or "zero" in str(e).lower():
             pytest.skip(f"Derivada nula em ponto inicial {pontoi}, teste ignorado: {e}")
         else:
             pytest.fail(f"Falhou ({funcao(0)}) para ponto inicial {pontoi}: {e}")
+
+
+#Funções bem simples, apenas para testar a função auxiliar.
+f1 = lambda x: 2*x - 10
+f2 = lambda x: x**3
+f3 = lambda x: (x-1)**5
+
+
+def logo_ali(a,b,tolerancia): #Função para comparar os resultados.
+    if type(a) == list: #Pois o método da bisseção retorna uma lista.
+        if abs(a[0]-b)<tolerancia and abs(a[1]-b)<tolerancia:
+            return True
+        else:
+            return False
+       
+    else:
+        if abs(a-b) < tolerancia:
+            return True
+        else:
+            return False
+       
+@pytest.mark.parametrize("funcao, raiz",[
+    (f1,5),
+    (f2,0),
+    (f3,1)
+])
+@pytest.mark.parametrize("nome", [
+    "bissecao",
+    "secante",
+    "newton"              
+])
+def test_raizes(funcao,raiz,nome):
+    resultado = rz.raiz(
+    funcao,
+    -10,10,10,
+    method = nome,
+    plot=False)
+    assert logo_ali(resultado,raiz, 1e-3), \
+        f"Esperado {raiz}, obtido {resultado}"
 
