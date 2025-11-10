@@ -15,7 +15,10 @@ from CB2325NumericaG5.integracao import integral
     [
         # (função, limite inferior, limite superior, valor esperado, método)
 
-        (lambda x: x, 0, 1, 0.5, "trapezios"),       # linear
+        (lambda x: x, 0, 1, 0.5, "trapezios"),      # x
+        (lambda x: x**3 + (45)*x**2, 0, 1, 15.25, "trapezios"),       # x³ + 45x²
+        (lambda x: x**12 + (-5)*x**2 -(91)*x**3, 0, 2, 252.82, "trapezios"),        # x^12 - 5x^2 - 91x^3
+        (lambda x: x**12 + (-5)*x**2 -(91)*x**3, -1, 1, -3.1515, "trapezios")        # x^12 - 5x^2 - 91x^3
     ]
 )
 def teste_simples_funcionalidade(funcao, a, b, esperado, metodo):
@@ -30,7 +33,10 @@ def teste_simples_funcionalidade(funcao, a, b, esperado, metodo):
     [
         # (função, limite inferior, limite superior, valor esperado, método)
 
-        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),      # constante 1
+        (lambda x: 5, -2, 2, 20.0, "trapezios"),        # constante 5
+        (lambda x: math.e, 0, 1, math.e * 1, "trapezios"),      # constante e
+        (lambda x: math.pi, 1, 4, math.pi * 3, "trapezios")     # constante pi
     ]
 )
 def teste_constante(funcao, a, b, esperado, metodo):
@@ -45,7 +51,7 @@ def teste_constante(funcao, a, b, esperado, metodo):
     [
         # (função, limite inferior, limite superior, valor esperado, método)
 
-        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),
     ]
 )
 def teste_erros(funcao, a, b, esperado, metodo):
@@ -60,7 +66,7 @@ def teste_erros(funcao, a, b, esperado, metodo):
     [
         # (função, limite inferior, limite superior, valor esperado, método)
 
-        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),      
     ]
 )
 def teste_pontos(funcao, a, b, esperado, metodo):
@@ -75,7 +81,7 @@ def teste_pontos(funcao, a, b, esperado, metodo):
     [
         # (função, limite inferior, limite superior, valor esperado, método)
 
-        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),      
     ]
 )
 def teste_intervalos_invertidos(funcao, a, b, esperado, metodo):
@@ -90,7 +96,7 @@ def teste_intervalos_invertidos(funcao, a, b, esperado, metodo):
     [
         # (função, limite inferior, limite superior, valor esperado, método)
 
-        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),     
     ]
 )
 def teste_pares_impares(funcao, a, b, esperado, metodo):
@@ -105,7 +111,7 @@ def teste_pares_impares(funcao, a, b, esperado, metodo):
     [
         # (função, limite inferior, limite superior, valor esperado, método)
 
-        (lambda x: 1, 0, 3, 3.0, "trapezios"),       # constante
+        (lambda x: 1, 0, 3, 3.0, "trapezios"),      
     ]
 )
 def teste_graficos(funcao, a, b, esperado, metodo):
