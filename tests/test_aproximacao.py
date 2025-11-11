@@ -4,50 +4,49 @@ import sys
 import os
 import warnings
 import pytest
+import matplotlib
+matplotlib.use("Agg")  
+import matplotlib.pyplot as plt
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from CB2325NumericaG5.aproximacao import (
     coeficiente_determinacao,
     aproximacao_polinomial,
-    txt_aproximacao_polinomial
+    txt_aproximacao_polinomial,
+    grafico_ajuste_linear,
+    grafico_ajuste_polinomial
 )
 
 class TestCoeficienteDeterminacao:
     @pytest.mark.parametrize("y_real, y_ajustado, r2_esperado", [
-        # Teste 1: y_real é igual ao y_ajustado
-        ([1, 2, 3, 4], [1, 2, 3, 4], 1.0),
-        
-        # Teste 2: y_ajustado é a média dos valores reais
-        ([1, 2, 3, 4], [2.5, 2.5, 2.5, 2.5], 0.0),
-        
-        # Teste 3: variação total nula
-        ([5, 5, 5], [5, 5, 5], 0.0),
-        
-        # Teste 4: caso normal
-        ([1, 2, 3], [1.1, 1.9, 3.0], 0.99),
-        
+        ([1, 2, 3, 4], [1, 2, 3, 4], 1.0),         # Teste 1: y_real é igual ao y_ajustado
+        ([1, 2, 3, 4], [2.5, 2.5, 2.5, 2.5], 0.0), # Teste 2: y_ajustado é a média dos valores reais
+        ([5, 5, 5], [5, 5, 5], 0.0),               # Teste 3: variação total nula
+        ([1, 2, 3], [1.1, 1.9, 3.0], 0.99),        # Teste 4: caso normal
     ])
     def test_r2_casos_validos(self, y_real, y_ajustado, r2_esperado):
+        """Testa os casos válidos."""
         r2_calculado = coeficiente_determinacao(y_real, y_ajustado)
-        assert r2_calculado == pytest.approx(r2_esperado) # usado pra lidar com erros de ponto flutuante
+        assert r2_calculado == pytest.approx(r2_esperado) 
         
     def test_r2_tamanho_invalido(self):
         """Testa se listas de tamanhos diferentes levantam ValueError."""
-        y_real = [1,2,3]
-        y_ajustado = [1,2]
+        y_real = [1, 2, 3]
+        y_ajustado = [1, 2]
         with pytest.raises(ValueError, match="devem ter o mesmo tamanho"):
             coeficiente_determinacao(y_real, y_ajustado)
             
 class TestAproximacaoPolinomial:
     @pytest.mark.parametrize("coords, grau, coefs_esperados", [
-        ([(0, 1), (1, 3), (2, 5)], 1, [1.0, 2.0]), # reta
-        ([(0, 0), (1, 1), (2, 4)], 2, [0.0, 0.0, 1.0]), # parábola
-        ([(0, 1), (1, 2), (2, 3)], 0, [2.0]), # constante
-        ([(1e6, 2e6), (2e6, 4e6), (3e6, 6e6)], 1, [0.0, 2.0]),  # números grandes
-        ([(1e-6, 2e-6), (2e-6, 4e-6)], 1, [0.0, 2.0]),  # números pequenos
+        ([(0, 1), (1, 3), (2, 5)], 1, [1.0, 2.0]),              # Reta
+        ([(0, 0), (1, 1), (2, 4)], 2, [0.0, 0.0, 1.0]),         # Parábola
+        ([(0, 1), (1, 2), (2, 3)], 0, [2.0]),                   # Constante
+        ([(1e6, 2e6), (2e6, 4e6), (3e6, 6e6)], 1, [0.0, 2.0]),  # Números grandes
+        ([(1e-6, 2e-6), (2e-6, 4e-6)], 1, [0.0, 2.0]),          # Números pequenos
     ])
     def test_aprox_casos_validos(self, coords, grau, coefs_esperados):
+        """Testa os casos válidos."""
         try:
             resultado = aproximacao_polinomial(coords, grau, mostrar_grafico=False)
         except ValueError as e:
@@ -55,18 +54,18 @@ class TestAproximacaoPolinomial:
                 pytest.xfail("Problema numérico esperado com valores muito grandes")
             else:
                 raise
-
         assert len(resultado) == len(coefs_esperados)
         assert resultado == pytest.approx(coefs_esperados, rel=0.1, abs=1e-3)
 
         
     def test_aprox_poucos_pontos(self):
-        coords = [(0,1), (1,2)]
+        """Testa se menos pontos do que grau+1 levantam erro."""
+        coords = [(0, 1), (1, 2)]
         with pytest.raises(KeyError, match="A quantidade de dados deve ser maior ou igual"):
             aproximacao_polinomial(coords, 3, mostrar_grafico=False)
             
     def test_aprox_pontos_repetidos(self):
-        """Testa se pontos repetidos levantam erro"""
+        """Testa se pontos repetidos levantam erro."""
         coords = [(1, 2), (1, 2), (2, 3)]
         grau = 1
         with warnings.catch_warnings(record=True) as w:
@@ -78,7 +77,7 @@ class TestAproximacaoPolinomial:
                 assert any("singular" in str(wi.message).lower() or "rank" in str(wi.message).lower() for wi in w)
         
     def test_aprox_lista_vazia(self):
-        """Testa se uma lista vazia levanta erro"""
+        """Testa se uma lista vazia levanta erro."""
         with pytest.raises((ValueError, KeyError)):
             aproximacao_polinomial([], 1, mostrar_grafico=False)
 
@@ -89,7 +88,7 @@ class TestAproximacaoPolinomial:
         ("texto", 3),
     ])
     def test_aprox_tipos_invalidos(self, coords):
-        """Testa se tipos inválidos levantam erros"""
+        """Testa se tipos inválidos levantam erros."""
         with pytest.raises((TypeError, ValueError, KeyError)):
             aproximacao_polinomial(coords, 1, mostrar_grafico=False)
             
@@ -125,3 +124,20 @@ class TestTxtAproximacaoPolinomial:
         """Verifica se há coeficientes numéricos aproximados no texto."""
         resultado = txt_aproximacao_polinomial([(0, 1), (1, 3), (2, 5)], 1)
         assert "(2" in resultado or "(1" in resultado, "Coeficientes esperados não aparecem no texto"
+        
+class TestGraficoAjustePolinomial:
+    def teste_grafico_ajuste_polinomial(self):
+        """Testa se a função gera o gráfico polinomial sem erro."""
+        x = [1, 2, 3]
+        y = [1, 4, 9]
+        coefs = [0, 0, 1]
+        r_quad = 1.0
+        grafico_ajuste_polinomial(x, y, coefs, r_quad)
+        
+class TestGraficoAjusteLinear:
+    def teste_grafico_ajuste_linear(self):
+        """Testa se a função gera gráfico linear sem erro."""
+        x = [1, 2, 3]
+        y = [2, 4, 6]
+        r_quad = 1
+        grafico_ajuste_linear(x, y, 2.0, 0.0, r_quad)
