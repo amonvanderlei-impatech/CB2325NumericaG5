@@ -329,29 +329,44 @@ seno = lambda x: x - (x ** 3) / 6 + (x ** 5) / 120 - (x ** 7) / 5040 + (x ** 9) 
 cosseno = lambda x: 1 - (x ** 2) / 2 + (x ** 4) / 24 - (x ** 6) / 720 + (x ** 8) / 40320 - (x ** 10) / 3628800
 
 
-def proximo(a, b, tol):
-    if abs(a) == 1 or abs(b) == 1:  # A função duas raizes admite duas raizes.
-        if abs(abs(a) - abs(b)) < tol:
-            return True
+def proximo(
+    a:float,
+    b:float,
+    tol:float
+    ) -> bool:
+    """Identifica a proximidade de dois resultados. Considerando as peculiaridades do problema, e as
+    sutilezas da possível raiz com aquelas adimitidas por cada função.
 
-    if abs(a - b) < tol:
+
+    Args:
+    a (float): A raiz concebida pelas funções newton, bissecao e secante.
+    b (float): A raiz teórica de cada função.
+    tol (float): A distância aceitável entre os dois resultados.
+
+
+    Returns:
+    bool: True para próximo e False para distantes.
+    """   
+    if abs(a - b) < tol: #Condição padrão.
         return True
 
-    if b == 1.57079632679489661923123169163:  # Identifica que a função é a cosseno.
-        if abs(abs(a) - abs(b)) < tol:  # A função cosseno admite os dois sinais.
+    if abs(a) == 1 or abs(b) == 1:  # A função "pol_duas_raizes" admite duas raizes (1 ou -1).
+        if abs(abs(a) - b) < tol: #Considera apenas a função pol_duas_raizes, excluindo a família polfract.
             return True
 
-        for i in range(10):  # A função cosseno adimite mais de uma raiz também.
+
+    if b == 1.57079632679489661923123169163:  # Identifica que a função é a cosseno.
+        for i in range(30):  # A função cosseno adimite mais de uma raiz.
             if abs(abs(a) - (abs(b + i * 3.14))) < 1:
                 return True
+
 
     for i in range(30):
         if (abs(a) - 3.14 * i) < .01:  # A função seno aparece com pi. E admite algumas raizes.
             if b == 0:
                 return True
-
-    else:
-        return False
+            
+    return False
 
 
 @pytest.mark.parametrize("pontoi", [
