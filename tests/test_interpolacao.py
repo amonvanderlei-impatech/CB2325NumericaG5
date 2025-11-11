@@ -8,6 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from CB2325NumericaG5.interpolacao import InterpLinear, PoliHermite, PoliInterp
 
+
 class TestInterpLinear:
     @pytest.mark.parametrize(
         "dominio, imagem",
@@ -57,7 +58,7 @@ class TestInterpLinear:
         dominio = [3, 1, 2]
         imagem = [9, 1, 4]
         interp = InterpLinear(dominio, imagem)
-        
+
         assert list(interp.pares_ord) == [(1, 1), (2, 4), (3, 9)]
         assert interp(1.5) == 2.5
 
@@ -65,7 +66,7 @@ class TestInterpLinear:
         """Testa pontos repetidos."""
         dominio = [0, 1, 1, 2]
         imagem = [0, 1, 1, 4]
-        
+
         with pytest.raises(ValueError):
             InterpLinear(dominio, imagem)
 
@@ -74,7 +75,7 @@ class TestInterpLinear:
         dominio = [0, 2, 4]
         imagem = [0, 4, 8]
         interp = InterpLinear(dominio, imagem)
-        
+
         assert interp(0) == 0
         assert interp(4) == 8
 
@@ -83,7 +84,7 @@ class TestInterpLinear:
         dominio = [0, 2, 4]
         imagem = [0, 4, 8]
         interp = InterpLinear(dominio, imagem)
-        
+
         assert interp(1) == 2
         assert interp(3) == 6
 
@@ -92,19 +93,19 @@ class TestInterpLinear:
         dominio = [0, 1]
         imagem = [0, 1]
         interp = InterpLinear(dominio, imagem)
-        
-        with pytest.raises(ValueError):
-            interp("a") # type: ignore
 
         with pytest.raises(ValueError):
-            interp(Symbol("x")) # type: ignore
-            
+            interp("a")  # type: ignore
+
+        with pytest.raises(ValueError):
+            interp(Symbol("x"))  # type: ignore
+
     def test_extrapolacao(self):
         """Testa extrapolação acima e abaixo do domínio."""
         dominio = [0, 1, 2]
         imagem = [0, 1, 4]
         interp = InterpLinear(dominio, imagem)
-        
+
         with pytest.raises(ValueError):
             interp(-1)
         with pytest.raises(ValueError):
@@ -128,8 +129,8 @@ class TestInterpLinear:
         imagem = [0.0, 1.0, 2.0]
         interp = InterpLinear(dominio, imagem)
         result = interp(1e-12)
-        
-        assert abs(result - 1.0) < 1e-9 # type: ignore
+
+        assert abs(result - 1.0) < 1e-9  # type: ignore
 
     def test_dados_inalterados(self):
         """Testa se o interpolador mantém domínio e imagem."""
@@ -139,7 +140,7 @@ class TestInterpLinear:
 
         dominio.append(3)
         imagem.append(9)
- 
+
         assert len(interp.dominio) == 3
         assert len(interp.imagem) == 3
 
@@ -148,17 +149,17 @@ class TestInterpLinear:
         dominio = [0, 2, 4, 6]
         imagem = [0, 1, 4, 9]
         interp = InterpLinear(dominio, imagem)
-        
+
         for x, y in zip(dominio, imagem):
-            assert math.isclose(interp(x), y, rel_tol=1e-12) # type: ignore
+            assert math.isclose(interp(x), y, rel_tol=1e-12)  # type: ignore
 
     def test_float_extremos(self):
         """Testa interpolação com valores muito grandes."""
         dominio = [1e-300, 1e300]
         imagem = [1e-300, 1e300]
         interp = InterpLinear(dominio, imagem)
-        
-        assert interp(1e150) > 0 # type: ignore
+
+        assert interp(1e150) > 0  # type: ignore
 
     def test_igualdade_instancias(self):
         """Testa se duas instâncias com mesmo domínio e imagem são iguais"""
@@ -186,6 +187,7 @@ class TestInterpLinear:
         imagem = [0, 1, 4]
         interp = InterpLinear(dominio, imagem)
         interp.grafico(precisao=10)
+
 
 class TestPoliHermite:
     @pytest.mark.parametrize(
@@ -241,7 +243,7 @@ class TestPoliHermite:
         dominio = [0, 1, 1, 2]
         imagem = [0, 1, 1, 4]
         imagem_derivada = [0, 1, 1, 0]
-        
+
         with pytest.raises((ValueError, TypeError)):
             PoliHermite(dominio, imagem, imagem_derivada)
 
@@ -251,7 +253,7 @@ class TestPoliHermite:
         imagem = [0, 4, 8]
         imagem_derivada = [-1, 0, 1]
         interp = PoliHermite(dominio, imagem, imagem_derivada)
-        
+
         assert interp(0) == 0
         assert interp(4) == 8
 
@@ -261,17 +263,17 @@ class TestPoliHermite:
         imagem = [0, 1]
         imagem_derivada = [1, 0]
         interp = PoliHermite(dominio, imagem, imagem_derivada)
-        
+
         with pytest.raises(ValueError):
-            interp("a") # type: ignore
-            
+            interp("a")  # type: ignore
+
     def test_extrapolacao(self):
         """Testa extrapolação acima e abaixo do domínio."""
         dominio = [0, 1, 2]
         imagem = [0, 1, 4]
         imagem_derivada = [-1, 0, 1]
         interp = PoliHermite(dominio, imagem, imagem_derivada)
-        
+
         with pytest.raises(ValueError):
             interp(-1)
         with pytest.raises(ValueError):
@@ -297,8 +299,8 @@ class TestPoliHermite:
         imagem_derivada = [0.0, 1.0, 2.0]
         interp = PoliHermite(dominio, imagem, imagem_derivada)
         result = interp(1e-12)
-        
-        assert abs(result - 1.0) < 1e-9 # type: ignore
+
+        assert abs(result - 1.0) < 1e-9  # type: ignore
 
     def test_dados_inalterados(self):
         """Testa se o interpolador mantém domínio e imagem."""
@@ -310,7 +312,7 @@ class TestPoliHermite:
         dominio.append(3)
         imagem.append(9)
         imagem_derivada.append(2)
- 
+
         assert len(interp.dominio) == 3
         assert len(interp.imagem) == 3
         assert len(interp.imagem_derivada) == 3
@@ -321,9 +323,9 @@ class TestPoliHermite:
         imagem = [0, 1, 4, 9]
         imagem_derivada = [-2, -1, 0, 1]
         interp = PoliHermite(dominio, imagem, imagem_derivada)
-        
+
         for x, y in zip(dominio, imagem):
-            assert math.isclose(interp(x), y, rel_tol=1e-12) # type: ignore
+            assert math.isclose(interp(x), y, rel_tol=1e-12)  # type: ignore
 
     def test_igualdade_instancias(self):
         """Testa se duas instâncias com mesmo domínio e imagem são iguais"""
@@ -357,19 +359,20 @@ class TestPoliHermite:
         interp = PoliHermite(dominio, imagem, imagem_derivada)
         interp.grafico(precisao=10)
 
+
 class TestPoliInterp:
     @pytest.mark.parametrize(
         "dominio, imagem",
         [
-            ([0, 1, 2], [1, 3, 7]),   # f(x) = x² + x + 1
+            ([0, 1, 2], [1, 3, 7]),  # f(x) = x² + x + 1
             ([0, 1, 2, 3], [1, 2, 5, 10])
         ]
     )
     def test_interp_polinomial_valida(self, dominio, imagem):
         """Testa casos válidos de interpolação polinomial."""
         interp = PoliInterp(dominio, imagem)
-        assert math.isclose(interp(dominio[0]), imagem[0], rel_tol=1e-12) # type: ignore
-        assert math.isclose(interp(dominio[-1]), imagem[-1], rel_tol=1e-12) # type: ignore
+        assert math.isclose(interp(dominio[0]), imagem[0], rel_tol=1e-12)  # type: ignore
+        assert math.isclose(interp(dominio[-1]), imagem[-1], rel_tol=1e-12)  # type: ignore
 
         # Testa extrapolação fora do domínio
         with pytest.raises(ValueError, match="fora do intervalo"):
@@ -414,7 +417,7 @@ class TestPoliInterp:
         dominio = [0, 1, 2]
         imagem = [1, 3, 7]  # f(x)=x²+x+1
         interp = PoliInterp(dominio, imagem)
-        assert math.isclose(interp(1.5), 1.5**2 + 1.5 + 1, rel_tol=1e-9) # type: ignore
+        assert math.isclose(interp(1.5), 1.5 ** 2 + 1.5 + 1, rel_tol=1e-9)  # type: ignore
 
     def test_call_tipo_errado(self):
         """Testa se o método __call__ rejeita tipos inválidos."""
@@ -440,7 +443,7 @@ class TestPoliInterp:
         imagem = [0.0, 1.0, 4.0]
         interp = PoliInterp(dominio, imagem)
         r = interp(1e-10)
-        assert abs(r - 1.0) < 1e-6 # type: ignore
+        assert abs(r - 1.0) < 1e-6  # type: ignore
 
     def test_nan_e_inf(self):
         """Testa presença de NaN e infinitos."""
