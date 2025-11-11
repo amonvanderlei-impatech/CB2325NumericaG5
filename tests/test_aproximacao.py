@@ -7,6 +7,7 @@ import pytest
 import matplotlib
 matplotlib.use("Agg")  
 import matplotlib.pyplot as plt
+from math import isclose
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -15,7 +16,10 @@ from CB2325NumericaG5.aproximacao import (
     aproximacao_polinomial,
     txt_aproximacao_polinomial,
     grafico_ajuste_linear,
-    grafico_ajuste_polinomial
+    grafico_ajuste_polinomial,
+    media,
+    regressao_linear,
+    resolvedor_de_sistemas
 )
 
 class TestCoeficienteDeterminacao:
@@ -141,3 +145,47 @@ class TestGraficoAjusteLinear:
         y = [2, 4, 6]
         r_quad = 1
         grafico_ajuste_linear(x, y, 2.0, 0.0, r_quad)
+
+@pytest.mark.parametrize(
+        "lista, valor_esperado",
+        [
+            ([1,3,5,7], 4),
+            ([2.5, 3, 4.75, 10], 5.0625 )
+        ]
+    )
+def test_media_valida(lista, valor_esperado):
+    assert media(lista) == valor_esperado
+
+@pytest.mark.parametrize(
+        "lista, valor_esperado",
+        [
+            ([], 4),
+            (['a', 'b', 'c'], 3 )
+        ]
+    )
+def test_media_invalida(lista, valor_esperado):
+    with pytest.raises(ValueError):
+            media(lista) == valor_esperado
+            
+@pytest.mark.parametrize(
+        "lista, valor_esperado",
+        [
+            ([1e-12, 3e-12], 2e-12),
+            ([1e12,3e12], 2e12),
+            ([1e50,3e50], 2e50),
+            ([1e5,2],50001)
+        ]
+    )
+def test_valores_extremos(lista, valor_esperado):
+    assert media(lista) == valor_esperado 
+
+@pytest.mark.parametrize(
+        "lista, valor_esperado",
+        [
+            ([1,math.nan], 2),
+            ([math.inf,3], 2),
+        ]
+    )
+def test_nan_inf(lista, valor_esperado):
+    with pytest.raises(ValueError):
+            media(lista) == valor_esperado 
