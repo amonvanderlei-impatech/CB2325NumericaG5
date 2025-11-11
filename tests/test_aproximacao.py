@@ -235,3 +235,76 @@ def test_zero_division_reta_vertical():
 def test_nan_inf(valores_x, valores_y):
     with pytest.raises(ValueError):
         regressao_linear(valores_x, valores_y)
+
+@pytest.mark.parametrize(
+    'MC, VI, solucao_esperada',
+    [
+        ([[1, 2], [3, 4]], [5, 11], [1.0, 2.0]),
+        ([[1, -1, 1], [2, -3, 4], [-2, -1, 1]], [0, -2, -7], [3.0, 4.0, 1.0]),
+        ([[5, -1], [0, 2]], [12, -4], [2.0, -2.0]),
+        ([[1.5, 0.5], [2.0, -1.0]], [7.0, 4.0], [4.0, 2.0]),
+    ]
+)
+def test_solucoes_validas(MC, VI, solucao_esperada):
+    solucao_obtida = resolvedor_de_sistemas(MC, VI, tolerancia=1e-11)
+    
+    for obtida, esperada in zip(solucao_obtida, solucao_esperada):
+        assert isclose(obtida, esperada, abs_tol=1e-9)
+
+def test_sistema_sem_solucao_unica():
+     
+    MC_impossivel = [[1, 1], [2, 2]]
+    VI_impossivel = [2, 5]
+
+    MC_indeterminado = [[1, 1], [2, 2]]
+    VI_indeterminado = [2, 4]
+    
+    match_msg = "Sistema sem solução única."
+    
+    with pytest.raises(ValueError, match=match_msg):
+        resolvedor_de_sistemas(MC_impossivel, VI_impossivel)
+
+    with pytest.raises(ValueError, match=match_msg):
+        resolvedor_de_sistemas(MC_indeterminado, VI_indeterminado)
+
+def test_troca_de_linhas():
+    """Testa se a função lida corretamente com pivô zero, trocando linhas."""
+    
+    MC = [[0, 1], [1, 1]]
+    VI = [2, 3]
+    solucao_esperada = [1.0, 2.0]
+    
+    solucao_obtida = resolvedor_de_sistemas(MC, VI)
+    
+    assert isclose(solucao_obtida[0], solucao_esperada[0], abs_tol=1e-9)
+    assert isclose(solucao_obtida[1], solucao_esperada[1], abs_tol=1e-9)
+
+def test_comportamento_da_tolerancia():
+    """
+    Testa se um número pequeno é tratado como ZERO quando <= tolerancia,
+    e como número normal quando > tolerancia.
+    """
+    pivo_pequeno = 1e-10  
+    
+    MC_instavel = [[pivo_pequeno, 1], [1, 1]]
+    VI_instavel = [2, 3]
+    
+    # 1. Tolerância Padrão (1e-11): O pivô (1e-10) é maior que a tolerância, deve resolver.
+    try:
+        solucao_obtida = resolvedor_de_sistemas(MC_instavel, VI_instavel, tolerancia=1e-11)
+        # Verifica se obteve uma solução (o valor exato não é importante aqui, apenas que resolveu)
+        assert len(solucao_obtida) == 2
+    except ValueError:
+        pytest.fail("A solução não deveria falhar com a tolerância padrão.")
+
+    # 2. Tolerância Apertada (1e-9): O pivô (1e-10) é menor que a tolerância, deve levantar ValueError.
+    with pytest.raises(ValueError):
+        resolvedor_de_sistemas(MC_instavel, VI_instavel, tolerancia=1e-9)
+        
+def test_tamanhos_incompativeis():
+    
+    MC = [[1, 1], [2, 2], [3, 3]]
+    VI = [1, 2] 
+
+    with pytest.raises((IndexError, ValueError)):
+        resolvedor_de_sistemas(MC, VI)
