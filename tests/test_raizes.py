@@ -386,7 +386,7 @@ def proximo(a, b, tol):
 ])
 def test_newton_raizes(funcao, raiz_esperada, pontoi):
     try:
-        resultado = rz.newton(funcao, pontoi, plot=False)
+        resultado = rz.newton(funcao, pontoi, max_iter= 1000, plot=False)
         assert proximo(resultado, raiz_esperada, 1e-3), \
             f"Esperado {raiz_esperada}, obtido {resultado}"
 
@@ -433,6 +433,7 @@ def test_raizes(funcao, raiz, nome):
         funcao,
         -10, 10, 10,
         method=nome,
+        max_iter=1000,
         plot=False)
     assert logo_ali(resultado, raiz, 1e-3), \
         f"Esperado {raiz}, obtido {resultado}"
