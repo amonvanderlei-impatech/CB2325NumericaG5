@@ -419,7 +419,22 @@ f2 = lambda x: x ** 3
 f3 = lambda x: (x - 1) ** 5
 
 
-def logo_ali(a, b, tolerancia):  # Função para comparar os resultados.
+def aproximado(
+    a: float,
+    b: float,
+    tolerancia: float
+    )-> bool:  # Função para comparar os resultados. Análoga à proximo.
+    """Identifica a proximidade de dois resultados. Considerando as peculiaridades do problema, e as
+    sutilezas da possível raiz com aquelas adimitidas por cada função.
+
+    Args:
+        a (float): Valor recebido.
+        b (float): Valor esperado.
+        tolerancia (float): Tolerância.
+
+    Returns:
+        bool: São ou não são próximos os valores.
+    """    
     if type(a) == list:  # Pois o método da bisseção retorna uma lista.
         if abs(a[0] - b) < tolerancia and abs(a[1] - b) < tolerancia:
             return True
@@ -449,7 +464,7 @@ def test_raizes(funcao, raiz, nome):
         -10, 10, 10,
         method=nome,
         plot=False)
-    assert logo_ali(resultado, raiz, 1e-3), \
+    assert aproximado(resultado, raiz, 1e-3), \
         f"Esperado {raiz}, obtido {resultado}"
 
 
@@ -459,7 +474,7 @@ def test_graficos():
         -10, 10, 10,
         method="newton",
     )
-    assert logo_ali(r1, 5, 1e-3), \
+    assert aproximado(r1, 5, 1e-3), \
         f"Esperado {5}, obtido {r1}"
 
     r2 = rz.raiz(
@@ -467,7 +482,7 @@ def test_graficos():
         -10, 10, 10,
         method="bissecao",
     )
-    assert logo_ali(r2, 5, 1e-3), \
+    assert aproximado(r2, 5, 1e-3), \
         f"Esperado {5}, obtido {r2}"
 
     r3 = rz.raiz(
@@ -475,6 +490,6 @@ def test_graficos():
         -10, 10, 10,
         method="secante",
     )
-    assert logo_ali(r3, 5, 1e-3), \
+    assert aproximado(r3, 5, 1e-3), \
         f"Esperado {5}, obtido {r3}"
 
