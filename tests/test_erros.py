@@ -14,11 +14,11 @@ class TestErrosNumericos:
     @pytest.mark.parametrize(
         "valor_real, valor_aprox, casas_decimais, esperado",
         [
-            (10.0, 7.5, 6, 2.5),
-            (0.0, 0.0, 6, 0.0),
-            (1, 0, 4, 1.0),
-            (5.1234567, 5.1234561, 6, 0.000001),
-            (1, 1.000000000001, 12, 0.000000000001)
+            (10.0, 7.5, 6, 2.5),                        # Cálculo básico
+            (0.0, 0.0, 6, 0.0),                         # Valores iguais
+            (1, 0, 4, 1.0),                             # Diferença total
+            (5.1234567, 5.1234561, 6, 0.000001),        # Teste de arredondamento e precisão
+            (1, 1.000000000001, 12, 0.000000000001)     # Alta precisão
         ]
     )
     def test_erro_absoluto_valido(self, valor_real, valor_aprox, casas_decimais, esperado):
@@ -26,6 +26,7 @@ class TestErrosNumericos:
         assert erro_absoluto(valor_real, valor_aprox, casas_decimais) == esperado
 
     @pytest.mark.parametrize("casas", [-1, 1.5, "a", None])
+    # Número negativo, float, string e None
     def test_erro_absoluto_casas_invalidas(self, casas):
         """Verifica se o ValueError está sendo levantado"""
         with pytest.raises(ValueError, match="inteiro não-negativo"):
@@ -63,7 +64,8 @@ class TestErrosNumericos:
         with pytest.raises(ValueError, match="não pode ser zero"):
             erro_relativo(0, 1.0)  
 
-    @pytest.mark.parametrize("casas", [-1, 1.5, "a", None])
+    @pytest.mark.parametrize("casas", [-1, 1.5, "a", None]) 
+    # Número negativo, float, string e None
     def test_erro_relativo_casas_invalidas(self, casas):
         """Verifica se o ValueError está sendo levantado"""
         with pytest.raises(ValueError, match="inteiro não-negativo"):
@@ -81,11 +83,11 @@ class TestErrosNumericos:
     @pytest.mark.parametrize(
         "lista_de_valores , esperado",
         [
-            ([1.0,2.0,3.0,4.0],10.0),
-            ([1.0,"b",9.0,"a"],10.0),
-            (["a",None, False],0.0),
-            ([],0.0),
-            ([2.5,-1.1,0.000000001,10000000],10000001.400000001),
+            ([1.0,2.0,3.0,4.0],10.0),                               # Cálculo básico
+            ([1.0,"b",9.0,"a"],10.0),                               # Strings misturadas
+            (["a",None, False],0.0),                                # Vários tipos diferentes
+            ([],0.0),                                               # Lista vazia
+            ([2.5,-1.1,0.000000001,10000000],10000001.400000001),   # Alta precisão
         ]
     )
 
@@ -94,6 +96,7 @@ class TestErrosNumericos:
         assert soma_de_kahan(lista_de_valores) == esperado
 
     @pytest.mark.parametrize("lista_de_valores", [1, -5, 2.5, 'a', None, True])
+    # Inteiro, número negativo, float, string, None e booleana
     def test_soma_de_kahan_tipo_errado(self, lista_de_valores):
         """Testa o TypeError quando a entrada não é uma lista"""
         with pytest.raises(TypeError, match="deve ser uma lista"):
