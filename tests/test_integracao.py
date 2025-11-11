@@ -25,7 +25,10 @@ n = 10000
         (lambda x: x**12 + (-5)*x**2 -(91)*x**3, -1, 1, -3.1795, "trapezios"),        # x^12 - 5x^2 - 91x^3
         (lambda x: 2*x**(-2) + 3*x + 4, 1, 3, 21.333, "trapezios"),      # 2x^-2 + 3x + 4
         (lambda x: x/x, 2, 3, 1, "trapezios"),      # x/x
-        (lambda x: math.e**(-x), 0, math.inf, 1, "trapezios")      # e^(-x) 
+        (lambda x: math.e**(-x), 0, math.inf, 1, "trapezios"),      # e^(-x) 
+        (lambda x: x**(1/2), 0, 2, 1.8856, "trapezios"),
+        (lambda x: x**(1/2), 0, 2, 1.8856, "simpson"),
+        (lambda x: x**(1/2), -2, -1, 0, "trapezios")
     ]
 )
 def test_polinomios(funcao, a, b, esperado, metodo):
@@ -76,7 +79,8 @@ def test_pontos(funcao, a, b, esperado, metodo):
 
         (lambda x: 2*x**3 +(-2)*x**2 +x +21 , 10, -3, -4593.3333, "trapezios"),     # 2*x^3 - 2*x^2 + x + 21
         (lambda x: x**2 +3*x +2 , 5, 0, -89.167, "simpson"),       # x^2 + 3*x + 2
-        (lambda x: math.cos(x), math.pi, 0, 0, "simpson")      # cos(x)
+        (lambda x: math.cos(x), math.pi, 0, 0, "simpson"),      # cos(x)
+        (lambda x: math.sin(x)/x, 3, -1, -2.7947, "simpson")
     ]
 )
 def test_intervalos_invertidos(funcao, a, b, esperado, metodo):
