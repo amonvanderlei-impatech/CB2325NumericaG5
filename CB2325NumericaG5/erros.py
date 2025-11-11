@@ -93,7 +93,7 @@ def soma_de_kahan(lista_de_valores: List[float]) -> float:
     compensação = 0.0 # a variável que será a compensação
     
     for valor in lista_de_valores: 
-        if not isinstance(valor, float): # se o valor fornecido não for um float, a operação não é realizada
+        if not isinstance(valor, float) and not isinstance(valor, int): # se o valor fornecido não for um float ou um inteiro, a operação não é realizada
             continue 
         
         v = valor - compensação # a cada valor, desconta-se a compensação

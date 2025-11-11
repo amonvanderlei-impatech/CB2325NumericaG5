@@ -13,10 +13,11 @@ As classes validam entradas, constroem expressões simbólicas (SymPy) e expõem
 
 
 from sympy import symbols, simplify, lambdify, Number, latex, Symbol
-from numpy import linspace, full_like
+from numpy import linspace
 from matplotlib.pyplot import show, subplots
 from typing import Union
 import numbers
+import math
 
 
 class Interpolacao:
@@ -31,7 +32,7 @@ class Interpolacao:
 
     Raises:
         TypeError: Se `dominio`, `imagem` (ou `imagem_derivada`, quando fornecida) não for do tipo list,
-            ou se algum elemento das listas não for um número real.
+            ou se algum elemento das listas não for um número real (verifica math.inf e math.nan).
         ValueError: Se `dominio` e `imagem` tiverem comprimentos diferentes, se `imagem_derivada`
             tiver comprimento diferente, se `dominio` contiver valores repetidos ou
             se `dominio` tiver menos de 2 pontos.
@@ -64,17 +65,25 @@ class Interpolacao:
         # Garantimos que o domínio é uma lista de números
         for i in dominio:
             if not isinstance(i, numbers.Real):
-                raise TypeError('`dominio` deve ser uma lista de números')
+                raise TypeError('`dominio` deve ser uma lista de números reais')
+            if math.isinf(i):
+                raise ValueError('`dominio` contém infinito')
+            if math.isnan(i):
+                raise ValueError('`dominio` contém NaN')
 
         # Garantimos que a imagem é uma lista de números
         for i in imagem:
             if not isinstance(i, numbers.Real):
-                raise TypeError('`imagem` deve ser uma lista de números')
+                raise TypeError('`imagem` deve ser uma lista de números reais')
+            if math.isinf(i):
+                raise ValueError('`imagem` contém infinito')
+            if math.isnan(i):
+                raise ValueError('`imagem` contém NaN')
 
         # Cria as variáveis internas
         self.x = symbols('x')
-        self.dominio = dominio
-        self.imagem = imagem
+        self.dominio = dominio[:]
+        self.imagem = imagem[:]
 
         if imagem_derivada is not None:
             # Garantimos que a imagem_derivada é uma lista de pontos
@@ -88,10 +97,14 @@ class Interpolacao:
             # Garantimos que a imagem_derivada é uma lista de números
             for i in imagem_derivada:
                 if not isinstance(i, numbers.Real):
-                    raise TypeError('`imagem_derivada` deve ser uma lista de números')
+                    raise TypeError('`imagem_derivada` deve ser uma lista de números reais')
+                if math.isinf(i):
+                    raise ValueError('`imagem_derivada` contém infinito')
+                if math.isnan(i):
+                    raise ValueError('`imagem_derivada` contém NaN')
 
             # Cria uma variável interna
-            self.imagem_derivada = imagem_derivada
+            self.imagem_derivada = imagem_derivada[:]
 
     def __repr__(self):
         raise NotImplementedError
@@ -130,7 +143,7 @@ class Interpolacao:
         y_lamb = lambdify(x_simb, self.pol, "numpy")
         y_func = y_lamb(y_vals)
         if isinstance(y_func, (int, float)):
-                y_func = full_like(y_vals, y_func)
+                y_func = [y_func]*precisao
         
         #Esboço da curva e dos pontos
         ax.plot(y_vals, y_func)
@@ -315,7 +328,7 @@ class InterpLinear(Interpolacao):
             y_lamb = lambdify(x_simb, y_expr, "numpy")
             y_func = y_lamb(y_vals)
             if isinstance(y_func, (int, float)):
-                y_func = full_like(y_vals, y_func)
+                y_func = [y_func]*precisao
             ax.plot(y_vals, y_func)
         
         #Esboço dos pontos
@@ -408,3 +421,6 @@ class PoliHermite(Interpolacao):
 
         else:
             raise ValueError('Valores fora do intervalo do domínio não são bem aproximados')
+        
+p = PoliInterp([0, 1], [0, 0])
+p.grafico()
