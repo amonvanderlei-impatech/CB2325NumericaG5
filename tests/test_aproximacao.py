@@ -189,3 +189,49 @@ def test_valores_extremos(lista, valor_esperado):
 def test_nan_inf(lista, valor_esperado):
     with pytest.raises(ValueError):
             media(lista) == valor_esperado 
+
+@pytest.mark.parametrize(
+        "valores_x, valores_y, beta_esperado, alpha_esperado",
+        [
+            ([1.0,2.0,3.0], [3.0, 5.0, 7.0], 2.0, 1.0),
+            ([1, 2, 3], [1, 2.5, 3.5], 1.25, -1/6),
+            ([1, 2, 3, 4],[8, 6, 4, 2], -2.0, 10.0 ),
+            ([1, 2, 3], [5, 5, 5], 0.0, 5.0)
+        ]
+    )
+def test_regressao_linear_valida(valores_x, valores_y, beta_esperado, alpha_esperado):
+    beta_obtido, alpha_obtido = regressao_linear(valores_x, valores_y)
+    assert isclose(beta_obtido, beta_esperado, abs_tol=1e-9)
+    assert isclose(alpha_obtido, alpha_esperado, abs_tol=1e-9)
+
+  
+def test_x_e_y_com_tamanhos_diferentes():
+    valores_x = [1,2]
+    valores_y = [3,4,5]
+    with pytest.raises(ValueError, match="A quantidade de abcissas deve ser igual à de ordenadas."):
+        regressao_linear(valores_x, valores_y)
+ 
+def test_zero_division_com_um_ponto():
+    valores_x = [10]
+    valores_y = [20]
+    
+    with pytest.raises(ZeroDivisionError):
+        regressao_linear(valores_x, valores_y)
+        
+def test_zero_division_reta_vertical():
+    valores_x = [5,5,5]
+    valores_y = [1,2,3]       
+    
+    with pytest.raises(ZeroDivisionError):
+        regressao_linear(valores_x, valores_y)   
+
+@pytest.mark.parametrize(
+    'valores_x, valores_y',
+    [
+        ([1, 2, math.nan], [3, 4, 5]),
+        ([1, 2, 3], [3, 4, math.inf]),
+    ]
+)
+def test_nan_inf(valores_x, valores_y):
+    with pytest.raises(ValueError):
+        regressao_linear(valores_x, valores_y)
