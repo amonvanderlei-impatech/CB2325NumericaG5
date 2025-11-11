@@ -421,6 +421,3 @@ class PoliHermite(Interpolacao):
 
         else:
             raise ValueError('Valores fora do intervalo do domínio não são bem aproximados')
-        
-p = PoliInterp([0, 1], [0, 0])
-p.grafico()
