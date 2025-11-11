@@ -35,9 +35,9 @@ class TestErrosNumericos:
     def test_erro_absoluto_tipo_errado(self):
         """Testa TypeError quando entradas que não são números são colocadas"""
         with pytest.raises(TypeError, match="devem ser números reais"):
-            erro_absoluto("a", 1.0) 
+            erro_absoluto("a", 1.0)  # type: ignore
         with pytest.raises(TypeError, match="devem ser números reais"):
-            erro_absoluto(2.0, None)
+            erro_absoluto(2.0, None) # type: ignore
 
     # erro_relativo()       
 
@@ -47,7 +47,7 @@ class TestErrosNumericos:
             (10.0, 7.5, 6, 0.25),               # Cálculo básico
             (-1.0, -1.0, 6, 0.0),                 # Valores iguais
             (1, 1.000000000001, 12, 0.000000000001),  # Alta precisão
-            (100, 99.9, 2, 0.001),              # Teste de escala
+            (100, 99.9, 3, 0.001),              # Teste de escala
             (100, 99.9, 1, 0.0),                # Teste de arredondamento
             (-10.0, -7.5, 6, 0.25),             # Números negativos
             (8.0, 10.0, 2, 0.25),               # Valor aproximado > valor real
@@ -74,9 +74,9 @@ class TestErrosNumericos:
     def test_erro_relativo_tipo_errado(self):
         """Testa TypeError quando entradas que não são números são colocadas"""
         with pytest.raises(TypeError, match="devem ser números reais"):
-            erro_relativo("a", 1.0) 
+            erro_relativo("a", 1.0)  # type: ignore
         with pytest.raises(TypeError, match="devem ser números reais"):
-            erro_relativo(2.0, None)
+            erro_relativo(2.0, None) # type: ignore
 
     # soma_de_kahan()
 
