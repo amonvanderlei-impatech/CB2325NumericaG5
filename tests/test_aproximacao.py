@@ -120,7 +120,7 @@ class TestTxtAproximacaoPolinomial:
     def test_formato_irregular(self):
         """Verifica se a formatação adiciona sinal + entre termos positivos."""
         resultado = txt_aproximacao_polinomial([(0, 1), (1, 3), (2, 5)], 1)
-        assert "+" not in resultado, "A função não insere '+' entre termos positivos"
+        assert "+" in resultado, "A função não insere '+' entre termos positivos"
 
     def test_valor_textual_correspondente(self):
         """Verifica se há coeficientes numéricos aproximados no texto."""
