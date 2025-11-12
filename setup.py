@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="CB2325NumericaG5",
-    version="0.0.1",
+    version="0.0.3",
     description=(
         "Biblioteca de cálculo numérico, contendo funcionalidades clássicas "
         "de análise numérica e recursos gráficos para visualização de resultados."

@@ -13,7 +13,7 @@ As classes validam entradas, constroem expressões simbólicas (SymPy) e expõem
 
 
 from sympy import symbols, simplify, lambdify, Number, latex, Symbol
-from numpy import linspace, full_like
+from numpy import linspace
 from matplotlib.pyplot import show, subplots
 from typing import Union
 import numbers
@@ -146,7 +146,7 @@ class Interpolacao:
         y_lamb = lambdify(x_simb, self.pol, "numpy")
         y_func = y_lamb(y_vals)
         if isinstance(y_func, (int, float)):
-                y_func = full_like(y_vals, y_func)
+                y_func = [y_func]*precisao
         
         #Esboço da curva e dos pontos
         ax.plot(y_vals, y_func)
@@ -341,7 +341,7 @@ class InterpLinear(Interpolacao):
             y_lamb = lambdify(x_simb, y_expr, "numpy")
             y_func = y_lamb(y_vals)
             if isinstance(y_func, (int, float)):
-                y_func = full_like(y_vals, y_func)
+                y_func = [y_func]*precisao
             ax.plot(y_vals, y_func)
         
         #Esboço dos pontos

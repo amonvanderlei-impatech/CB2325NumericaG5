@@ -1,7 +1,7 @@
 import sympy as sp
-from typing import Callable
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import Callable, Union
 
 def bissecao(
     f: Callable[[float], float],
