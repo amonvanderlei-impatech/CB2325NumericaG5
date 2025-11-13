@@ -439,7 +439,7 @@ def test_raizes(funcao, raiz, nome):
         funcao,
         -10, 10, 10,
         method=nome,
-        max_iter=10000,
+        max_iter=10000, #Aqui tinha sido a mudança.
         plot=False)
     assert aproximado(resultado, raiz, .1), \
         f"Esperado {raiz}, obtido {resultado}"
