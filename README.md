@@ -67,4 +67,4 @@ O desenvolvimento deste módulo foi realizado por:
 
 ## Licença
 
-Este projeto está sob a [Licença MIT](https://www.google.com/search?q=LICENSE).
+Este projeto está sob a [Licença MIT](LICENSE).
