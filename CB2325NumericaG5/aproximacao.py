@@ -184,8 +184,14 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
     Returns:
         list: Lista dos coeficientes em ordem crescente de grau.
     """    
+    
+    suporte = set()
+    for i in lista_de_coordenadas:
+        suporte.add(i)
+    lista_de_coordenadas = [i for i in suporte]
+    
     quantidade_de_pontos = len(lista_de_coordenadas)
-
+    
     if quantidade_de_pontos < grau_do_polinomio+1: #Condição necessária para que um polinômio seja encontrado.
         raise KeyError("A quantidade de dados deve ser maior ou igual ao grau do polinômio desejado.")
     #(
