@@ -18,7 +18,7 @@ def media(dado: list) -> float:
         raise ValueError("A lista está vazia.")
 
     for i in dado:
-        if type(i) != float and type(i) != int or math.isnan(i) or math.isinf(i):
+        if not isinstance(i, (int, float)) or math.isnan(i) or math.isinf(i):
             raise ValueError("Os elementos não se tratam de números, logo não há como efetuar sua média.")
     
     
