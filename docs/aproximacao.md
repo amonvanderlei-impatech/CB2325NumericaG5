@@ -7,6 +7,8 @@ Este módulo implementa funções de análise numérica voltadas para ajuste de 
 Ele fornece ferramentas para cálculo de médias, regressões lineares e polinomiais (via método dos mínimos quadrados),
 bem como funções auxiliares para avaliar a qualidade do ajuste (R²) e gerar representações textuais de polinômios.
 
+[Clique aqui](graficos_aproximacao.md) para acessar o módulo gráfico utilizado.
+
 | Função | Descrição  |
 | ------------------------- | ------------------------- |
 | [media](#cb2325numericag5aproximacaomedia)(dado)     | Retorna a média dos elementos da lista dada. |
