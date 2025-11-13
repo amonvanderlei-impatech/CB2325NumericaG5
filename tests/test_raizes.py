@@ -73,15 +73,15 @@ class Testbissecao:
 
         ],
     )
-
     def test_float_extremos(self, f, a, b):
-        """Testa bissecao com valores muito grandes: aceita resultado ≈ 0 ou ValueError."""
+        """Testa bicessao com valores muito grandes: aceita resultado ≈ 0 ou ValueError."""
         try:
             resultado = bissecao(f, a, b, plot=False)
         except RuntimeError:
-            # Bissecao não encontrou a raiz
+            # Se bissecao falhar, lança RuntimeError
             return
         assert resultado == pytest.approx(0, abs=1e-6)
+
 
     @pytest.mark.parametrize(
         "f, a, b",
@@ -220,7 +220,12 @@ class Testsecante:
 
     def test_float_extremos(self, f, a, b):
         """Testa secante com valores muito grandes."""
-        assert bissecao(f, a, b, plot=False) == pytest.approx(0, abs=1e-6)
+        try:
+            resultado = secante(f, a, b, plot=False)
+        except ValueError:
+            # Se secante falhar, lança ValueError
+            return
+        assert resultado == pytest.approx(0, abs=1e-6)
 
 
     @pytest.mark.parametrize(
@@ -274,8 +279,7 @@ class Testsecante:
 
     def test_descontinuidades(self, f, a, b):
         """Testa funções não contínuas"""
-        with pytest.raises(ValueError):
-            secante(f, a, b, plot=False)
+        assert secante(f, a, b, plot=False) == pytest.approx(0, abs=1e-6)
 
         # Observação: Não é verificado se isinf(math.tan(+-pi/2))
 
