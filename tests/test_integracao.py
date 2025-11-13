@@ -123,10 +123,22 @@ def test_simpson_n_impar():
     "funcao, a, b, metodo", 
     [
         (lambda x: 23/x, 0, 1, "trapezios"),
+        (lambda x: math.sin(x)/(x+1), 3, -1, "simpson"),
+    ]
+    )
+def test_divisao_zero_no_limite(funcao, a, b, metodo):
+    """Teste de integral de divisão por zero"""
+    with pytest.raises(ValueError):
+        integral(funcao, a, b, n, metodo = metodo, plot = False)
+
+@pytest.mark.parametrize(
+    "funcao, a, b, metodo", 
+    [
+        (lambda x: 23/x, -1, 1, "trapezios"),
         (lambda x: math.sin(x)/x, 3, -1, "simpson"),
     ]
     )
-def test_divisao_zero():
+def test_divisao_zero_no_interior(funcao, a, b, metodo):
     """Teste de integral de divisão por zero"""
     with pytest.raises(ZeroDivisionError):
         integral(funcao, a, b, n, metodo = metodo, plot = False)
@@ -135,9 +147,9 @@ def test_divisao_zero():
 @pytest.mark.parametrize(
     "funcao, a, b, metodo", 
     [
-        (lambda x: math.e**(-x), 0, math.inf, "trapezios")
-        (lambda x: math.e**(-x), 0, math.nan, "trapezios")
-        (lambda x: math.e**(-x), math.inf, 1, "simpson")
+        (lambda x: math.e**(-x), 0, math.inf, "trapezios"),
+        (lambda x: math.e**(-x), 0, math.nan, "trapezios"),
+        (lambda x: math.e**(-x), math.inf, 1, "simpson"),
         (lambda x: math.e**(-x), math.nan, 1, "simpson")
     ]
     )

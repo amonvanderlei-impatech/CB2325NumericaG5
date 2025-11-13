@@ -21,6 +21,33 @@ from typing import Callable, Union
 import matplotlib.pyplot as plt
 import numpy as np
 
+def _validar_valor_funcao(valor: Union[float, np.ndarray, complex]) -> float:
+    """
+    Valida se o valor retornado pela função é um número real finito.
+    
+    Args:
+        valor: Valor retornado pela função a ser integrada
+        
+    Returns:
+        float: Valor convertido para float se for válido
+        
+    Raises:
+        ValueError: Se o valor for infinito, NaN ou complexo
+    """
+    try:
+        # Tenta converter para float
+        valor_float = float(valor)
+        
+        # Verifica se é finito (não é inf, -inf ou nan)
+        if not np.isfinite(valor_float):
+            raise ValueError("A função retornou um valor infinito ou NaN")
+            
+        return valor_float
+        
+    except (TypeError, ValueError) as e:
+        # Se não conseguiu converter para float ou é complexo
+        raise ValueError("A função deve retornar números reais em todo o intervalo [a, b] da integral") from e
+
 def _plot_parabola(x0: float, x1: float, x2: float, y0: float, y1: float, y2: float) -> None:
     """
     Gera a representação gráfica de uma parábola que passa por (x0,y0), (x1,y1) e (x2,y2) no intervalo [x0,x2],
@@ -107,6 +134,18 @@ def integral(
     if metodo not in ("trapezios", "simpson"):
         raise ValueError("Método inválido! Use 'trapezios' ou 'simpson'.")
     
+    # Valida se a e b são finitos
+    if not np.isfinite(a) or not np.isfinite(b):
+        raise ValueError("Os limites de integração 'a' e 'b' devem ser números reais finitos.")
+    
+    # Testa a função nos limites para validação antecipada
+    try:
+        _validar_valor_funcao(funcao(a))
+        _validar_valor_funcao(funcao(b))
+    except Exception as e:
+        raise ValueError(f"Função inválida nos limites de integração: {e}")
+
+    
     funcao_vec = np.vectorize(funcao, otypes=[float])
 
     # Cálculo da integral
@@ -117,7 +156,9 @@ def integral(
         for i in range(n):
             x1 = a + i * dx
             x2 = a + (i + 1) * dx
-            soma += (float(funcao_vec(x1)) + float(funcao_vec(x2))) * dx / 2
+            y1 = _validar_valor_funcao(funcao_vec(x1))
+            y2 = _validar_valor_funcao(funcao_vec(x2))
+            soma += (y1 + y2) * dx / 2
                 
     else: # metodo == "simpson"
         if n % 2 != 0:
@@ -125,11 +166,11 @@ def integral(
         for i in range(n + 1):
             x = a + i * dx
             if i == 0 or i == n:
-                soma += float(funcao_vec(x))
+                soma += _validar_valor_funcao(funcao_vec(x))
             elif i % 2 == 1:
-                soma += 4 * float(funcao_vec(x))
+                soma += 4 * _validar_valor_funcao(funcao_vec(x))
             else:
-                soma += 2 * float(funcao_vec(x))
+                soma += 2 * _validar_valor_funcao(funcao_vec(x))
                 
         soma *= dx / 3
 
