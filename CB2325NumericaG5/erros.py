@@ -80,10 +80,13 @@ def soma_de_kahan(lista_de_valores: List[float]) -> float:
     que será somado, compensando a perda de precisão do anterior.
 
     Args:
-        lista_de_valores (List[float]): A lista dos valores de ponto fluante que se deseja somar
+        lista_de_valores (float[]): A lista dos valores de ponto fluante que se deseja somar
 
     Returns:
         float: Retorna a soma compensada dos números de ponto flutuante fornecidos
+        
+    Raises:
+        TypeError: Se `lista_de_valores` não for uma lista.
     """
     
     if not isinstance(lista_de_valores, list):
