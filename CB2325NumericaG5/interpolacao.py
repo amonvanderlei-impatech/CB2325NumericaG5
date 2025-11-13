@@ -111,6 +111,9 @@ class Interpolacao:
 
     def __call__(self, p:Union[int, float, Symbol]):
         raise NotImplementedError
+
+    def __eq__(self, other):
+        raise NotImplementedError
     
     def grafico(self, precisao:int = 100) -> None:
         """
@@ -221,6 +224,11 @@ class PoliInterp(Interpolacao):
             return float(temp)
         return None
 
+    def __eq__(self, other):
+        if isinstance(other, PoliInterp) or isinstance(other, PoliHermite):
+            return self.pol == other.pol
+        return False
+
 
 class InterpLinear(Interpolacao):
     """
@@ -290,6 +298,11 @@ class InterpLinear(Interpolacao):
             if temp[i] <= p <= temp[i + 1]:
                 return self._eval((temp[i], temp[i + 1]), p)
         return None
+
+    def __eq__(self, other):
+        if isinstance(other, InterpLinear):
+            return self.pol == other.pol
+        return False
     
     def grafico(self, precisao:int = 100) -> None:
         """
@@ -421,3 +434,8 @@ class PoliHermite(Interpolacao):
 
         else:
             raise ValueError('Valores fora do intervalo do domínio não são bem aproximados')
+
+    def __eq__(self, other):
+        if isinstance(other, PoliInterp) or isinstance(other, PoliHermite):
+            return self.pol == other.pol
+        return False

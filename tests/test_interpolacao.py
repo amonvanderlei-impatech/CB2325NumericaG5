@@ -229,8 +229,7 @@ class TestPoliHermite:
         [
             (["a", 1], [1, 2], [1, 2]),
             ([1, 2], "a", [1, 2]),
-            ([1, 2], [1, 2], ["a", 1]),
-            ([1, 2], [1, 2], [1, 2])
+            ([1, 2], [1, 2], ["a", 1])
         ]
     )
     def test_interp_hermite_invalida_tipo(self, dominio, imagem, imagem_derivada):

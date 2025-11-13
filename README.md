@@ -20,11 +20,11 @@ O módulo **CB2325NumericaG5** é uma biblioteca de **Cálculo Numérico** e **A
 
 O projeto é dividido nos seguintes submódulos:
 
-* **[erros](docs/CB2325NumericaG5/erros.md)**: Métodos para calcular erros numéricos.
-* **[raizes](CB2325NumericaG5/raizes.md)**: Métodos para calcular raízes de funções.
-* **[interpolacao](CB2325NumericaG5/interpolacao.md)**: Métodos para interpolação polinomial.
-* **[aproximacao](CB2325NumericaG5/aproximacao.md)**: Métodos de aproximação de funções.
-* **[integracao](CB2325NumericaG5/integracao.md)**: Métodos para realizar integração numérica.
+* **[erros](docs/erros.md)**: Métodos para calcular erros numéricos.
+* **[raizes](docs/raizes.md)**: Métodos para calcular raízes de funções.
+* **[interpolacao](docs/interpolacao.md)**: Métodos para interpolação polinomial.
+* **[aproximacao](docs/aproximacao.md)**: Métodos de aproximação de funções.
+* **[integracao](docs/integracao.md)**: Métodos para realizar integração numérica.
 
 ---
 
