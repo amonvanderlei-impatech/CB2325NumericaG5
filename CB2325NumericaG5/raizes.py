@@ -224,7 +224,7 @@ def secante(
         raise ValueError
     for _ in range(max_iter):
         if abs(fb - fa) < 1e-15:
-            raise ZeroDivisionError
+            raise ZeroDivisionError("Divisão por zero no método da secante.")
 
         c = b - fb * (b - a) / (fb - fa)
 
