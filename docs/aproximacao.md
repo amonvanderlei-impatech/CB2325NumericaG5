@@ -189,11 +189,11 @@ Lista de pontos (x, y) que serão utilizados no ajuste polinomial.
 Grau do polinômio a ser ajustado.
 Exemplo: `1` para linear, `2` para quadrático, etc.
 
-**mostrar_grafico** : `bool`, opcional
+**mostrar_grafico** : `bool`, opcional.
 Indica se o gráfico de dispersão e a curva ajustada devem ser exibidos automaticamente.
 Padrão: `True`.
 
-**coeficiente_determinacao_r** : `bool`, opcional
+**coeficiente_determinacao_r** : `bool`, opcional.
 Indica se o coeficiente de determinação R² deve ser calculado e exibido no terminal.
 Padrão: `True`.
 
