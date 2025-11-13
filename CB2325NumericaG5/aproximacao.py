@@ -1,3 +1,4 @@
+import math
 from CB2325NumericaG5.graficos_aproximacao import grafico_ajuste_linear, grafico_ajuste_polinomial 
 
 def media(dado: list) -> float:
@@ -8,13 +9,19 @@ def media(dado: list) -> float:
 
     Raises:
         ValueError: A lista está vazia.    
-
+        ValueError: A lista não é composta por números.
+        
     Returns:
         float: A média aritmética dos dados fornecidos.
     """    
     if len(dado) == 0:
         raise ValueError("A lista está vazia.")
 
+    for i in dado:
+        if type(i) != float and type(i) != int or math.isnan(i) or math.isinf(i):
+            raise ValueError("Os elementos não se tratam de números, logo não há como efetuar sua média.")
+    
+    
     soma = sum(dado)
 
     return float(soma/(len(dado))) #deixado float explícito aqui - não era necessário, mas fica mais claro
