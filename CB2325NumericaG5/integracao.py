@@ -20,6 +20,7 @@ Exemplo de uso:
 from typing import Callable, Union
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 
 def _validar_valor_funcao(valor: Union[float, np.ndarray, complex]) -> float:
     """
@@ -39,7 +40,7 @@ def _validar_valor_funcao(valor: Union[float, np.ndarray, complex]) -> float:
         valor_float = float(valor)
         
         # Verifica se é finito (não é inf, -inf ou nan)
-        if not np.isfinite(valor_float):
+        if not np.isfinite(valor_float) and not math.isinf(valor_float) and not math.isnan(valor_float):
             raise ValueError("A função retornou um valor infinito ou NaN")
             
         return valor_float
