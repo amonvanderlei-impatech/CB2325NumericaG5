@@ -39,7 +39,7 @@ A média aritmética dos dados fornecidos.
 #### Erros:
 
 **ValueError** :
-Se a lista estiver vazia.
+Se a lista estiver vazia ou houver infinito/NaN dentro da lista.
 
 ### Exemplos:
 
@@ -114,6 +114,7 @@ Padrão: `True`.
 
 **(beta_chapeu, alpha_chapeu)** : `tuple[float, float]`
 Coeficiente angular (inclinação) e coeficiente linear (intercepto) da reta ajustada.
+Se `coeficiente_determinacao_r=True` imprime R².
 
 #### Erros:
 
@@ -179,6 +180,8 @@ Se o sistema não possuir solução única (por exemplo, quando uma linha result
 `CB2325NumericaG5.aproximacao.aproximacao_polinomial(lista_de_coordenadas, grau_do_polinomio, mostrar_grafico=True, coeficiente_determinacao_r=True)`
 
 Utiliza o método dos **Mínimos Quadrados (MMQ)** para realizar uma **regressão polinomial** dos pontos fornecidos no plano, retornando os coeficientes do polinômio ajustado.
+
+Pontos duplicados são automaticamente removidos.
 
 #### Parâmetros:
 

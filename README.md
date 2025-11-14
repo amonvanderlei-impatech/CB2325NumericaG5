@@ -13,8 +13,9 @@
 
 ## Descrição do Projeto
 
-O módulo **CB2325NumericaG5** é uma biblioteca de **Cálculo Numérico** e **Análise Numérica**. Fornece funcionalidades clássicas, além de recursos gráficos para a visualização e interpretação dos resultados.
+O **CB2325NumericaG5** é um módulo de **Cálculo Numérico** desenvolvido com o objetivo de fornecer ferramentas completas e didáticas para operações fundamentais da disciplina.
 
+Todos os métodos foram implementados manualmente, sem depender de rotinas prontas de alto nível (como `numpy.linalg.solve`), favorecendo o estudo dos algoritmos.
 
 ## Estrutura do Módulo
 
@@ -26,42 +27,63 @@ O projeto é dividido nos seguintes submódulos:
 * **[aproximacao](docs/aproximacao.md)**: Métodos de aproximação de funções.
 * **[integracao](docs/integracao.md)**: Métodos para realizar integração numérica.
 
----
-
 ## Instalação
 
-O módulo requer Python versão $3.8$ ou superior. Utilize o `pip` para instalação:
+### Opção 1 — Instalar via `pip` (PyPI)
+
+Requer **Python 3.8+**:
 
 ```bash
 pip install CB2325NumericaG5
 ```
 
+### Opção 2 — Usar localmente
+
+Se você baixou o repositório e deseja rodar um arquivo `exemplo.py` **dentro da pasta `/sandbox`**, basta adicionar o diretório raiz ao `sys.path` para permitir importações locais.
+
+Exemplo:
+
+```python
+import sys, os
+
+# Adiciona a pasta raiz do projeto ao sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from CB2325NumericaG5.erros import erro_absoluto
+
+valor_real = 3.141592
+valor_aprox = 3.14
+
+ea = erro_absoluto(valor_real, valor_aprox)
+print(ea, er)
+```
+
+> Esse é o formato **exato** recomendado quando o módulo está sendo usado localmente no `/sandbox`.
+
 ## Dependências
 
 O pacote requer as seguintes bibliotecas:
 
-| Pacote | Função |
+| Pacote | Uso |
 | :--- | :--- |
+| `numpy` | Operações numéricas e geração de amostras. |
 | `sympy` | Manipulação e cálculo simbólico. |
 | `matplotlib` | Geração de gráficos e visualização de dados. |
-| `numpy` | Suporte para operações numéricas. |
-
------
 
 ## Autoria
 
 O desenvolvimento deste módulo foi realizado por:
 
-  * Amon Vanderlei
-  * André Oliveira
-  * Carlos Santos
-  * Davi Campos
-  * Felipe Frohlich
-  * Gabriel Dias
-  * Lisandra Fagundes
-  * Lucas Corazza
-  * Lucas Oliveira
-  * Nicole Freire
+  - [Amon Vanderlei](https://github.com/amonvanderlei-impatech)
+  - [André Oliveira](https://github.com/AndreFurriel)
+  - [Carlos Santos](https://github.com/Cadueduedu)
+  - [Davi Campos](https://github.com/davipestana-impatech)
+  - [Felipe Frohlich](https://github.com/papaidoceu2)
+  - [Gabriel Dias](https://github.com/GabrielKrauss2025)
+  - [Lisandra Fagundes](https://github.com/lisandra21)
+  - [Lucas Corazza](https://github.com/LucasCorazza2025)
+  - [Lucas Oliveira](https://github.com/allucasoliveira-lab)
+  - [Nicole Freire](https://github.com/al-nicole-freire)
 
 -----
 
