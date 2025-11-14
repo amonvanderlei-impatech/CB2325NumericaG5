@@ -2,6 +2,8 @@ import sympy as sp
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Callable, Union
+import math
+
 
 def bissecao(
     f: Callable[[float], float],
@@ -32,7 +34,16 @@ def bissecao(
     Returns:
         float: Uma aproximação da raiz encontrada no intervalo [a, b].
     """
-
+    if math.isnan(a) or math.isnan(b) or math.isinf(a) or math.isinf(b):
+        raise ValueError
+    if not all(map(math.isfinite, [a, b])):
+        raise ValueError    
+    
+    fa, fb = f(a), f(b)
+    if any(math.isnan(val) or math.isinf(val) for val in [fa, fb]):
+        raise ValueError
+    if math.isnan(fa) or math.isnan(fb) or math.isinf(fa) or math.isinf(fb):
+        raise ValueError
     if f(a) * f(b) > 0:
         raise ValueError("f(a) e f(b) devem ter sinais opostos para o método da bisseção.")
 
@@ -70,13 +81,19 @@ def bissecao(
             b = c
         else:
             a = c
-
+        fc = f(c)
+        if math.isnan(fc) or math.isinf(fc):
+            raise ValueError
+    else:
+        raise RuntimeError
+    
     plt.tight_layout()
     if plot:
         plt.show()
     else:
         plt.close()
-
+    if math.isnan(f(c)) or math.isinf(f(c)):
+        raise ValueError
     return c
 
 def newton(
@@ -161,7 +178,8 @@ def newton(
         plt.grid(True, linestyle=':', alpha=0.5)
         plt.tight_layout()
         plt.show()
-
+    if abs(f(xk)) > tol:
+        raise ValueError
     return xk
 
 def secante(
@@ -192,10 +210,18 @@ def secante(
     Returns:
         float: Aproximação da raiz obtida pelo método da secante.
     """
-
+    if math.isnan(a) or math.isnan(b) or math.isinf(a) or math.isinf(b):
+        raise ValueError
+    
+    
     fa, fb = f(a), f(b)
     history = [(a, fa), (b, fb)]
-
+    if any(math.isnan(val) or math.isinf(val) for val in [fa, fb]):
+        raise ValueError
+    if not all(map(math.isfinite, [a, b])):
+        raise ValueError
+    if math.isnan(fa) or math.isnan(fb) or math.isinf(fa) or math.isinf(fb):
+        raise ValueError
     for _ in range(max_iter):
         if abs(fb - fa) < 1e-15:
             raise ZeroDivisionError("Divisão por zero no método da secante.")
@@ -209,6 +235,9 @@ def secante(
         a, b = b, c
         fa, fb = fb, f(c)
         history.append((b, fb))
+        fc = f(c)
+        if math.isnan(fc) or math.isinf(fc):
+            raise ValueError
 
     if plot:
         x_vals = np.linspace(min(a, b) - 2, max(a, b) + 2, 800)
@@ -238,7 +267,10 @@ def secante(
         plt.grid(True, linestyle=':')
         plt.tight_layout()
         plt.show()
-
+    if f(c) > tol:
+        raise RuntimeError
+    if math.isnan(f(c)) or math.isinf(f(c)):
+        raise ValueError
     return c
 
 def raiz(f: Callable[..., object], 

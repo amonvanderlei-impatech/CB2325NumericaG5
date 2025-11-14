@@ -1,4 +1,3 @@
-from sympy import Symbol
 import math
 import sys
 import os
@@ -6,7 +5,6 @@ import warnings
 import pytest
 import matplotlib
 matplotlib.use("Agg")  
-import matplotlib.pyplot as plt
 from math import isclose
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -122,7 +120,7 @@ class TestTxtAproximacaoPolinomial:
     def test_formato_irregular(self):
         """Verifica se a formatação adiciona sinal + entre termos positivos."""
         resultado = txt_aproximacao_polinomial([(0, 1), (1, 3), (2, 5)], 1)
-        assert "+" not in resultado, "A função não insere '+' entre termos positivos"
+        assert "+" in resultado, "A função não insere '+' entre termos positivos"
 
     def test_valor_textual_correspondente(self):
         """Verifica se há coeficientes numéricos aproximados no texto."""
@@ -157,15 +155,15 @@ def test_media_valida(lista, valor_esperado):
     assert media(lista) == valor_esperado
 
 @pytest.mark.parametrize(
-        "lista, valor_esperado",
+        "lista",
         [
             ([], 4),
             (['a', 'b', 'c'], 3 )
         ]
     )
-def test_media_invalida(lista, valor_esperado):
+def test_media_invalida(lista):
     with pytest.raises(ValueError):
-            media(lista) == valor_esperado
+            media(lista)
             
 @pytest.mark.parametrize(
         "lista, valor_esperado",
@@ -180,15 +178,15 @@ def test_valores_extremos(lista, valor_esperado):
     assert media(lista) == valor_esperado 
 
 @pytest.mark.parametrize(
-        "lista, valor_esperado",
+        "lista",
         [
-            ([1,math.nan], 2),
-            ([math.inf,3], 2),
+            ([1,math.nan]),
+            ([math.inf,3]),
         ]
     )
-def test_nan_inf(lista, valor_esperado):
+def test_media_nan_inf(lista):
     with pytest.raises(ValueError):
-            media(lista) == valor_esperado 
+            media(lista) 
 
 @pytest.mark.parametrize(
         "valores_x, valores_y, beta_esperado, alpha_esperado",
