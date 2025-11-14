@@ -1,7 +1,7 @@
 import sympy as sp
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Callable, Union
+from typing import Callable
 import math
 
 
@@ -29,7 +29,11 @@ def bissecao(
         plot (bool, optional): Se True, exibe o gráfico das iterações. Padrão: True.
 
     Raises:
-        ValueError: Se f(a) e f(b) não tiverem sinais opostos.
+        ValueError: Se `a` ou `b` forem inválidos (NaN, infinito ou não finitos).
+        ValueError: Se `f(a)` ou `f(b)` forem inválidos.
+        ValueError: Se não houver mudança de sinal no intervalo.
+        ValueError: Se algum valor no meio das iterações resultar em NaN/infinito.
+        RuntimeError: Se o método não convergir após `max_iter` iterações.
 
     Returns:
         float: Uma aproximação da raiz encontrada no intervalo [a, b].
@@ -74,7 +78,6 @@ def bissecao(
         plt.text(c, f(c), f"c{i+1}", fontsize=8, color='orange', ha='left', va='bottom')
 
         if abs(f(c)) < tol:
-            print(f"Convergência atingida na iteração {i+1}: c = {c:.6f}")
             break
 
         if f(a) * f(c) < 0:
@@ -124,6 +127,7 @@ def newton(
 
     Raises:
         ZeroDivisionError: Se a derivada num ponto for zero (divisão por zero no método).
+        ValueError: Se, após as iterações, |f(x_k)| ainda for maior que a tolerância.
 
     Returns:
         float: Aproximação da raiz obtida pelo método de Newton.
@@ -206,6 +210,8 @@ def secante(
 
     Raises:
         ZeroDivisionError: Se ocorrer divisão por zero ao calcular o próximo iterando.
+        ValueError: Se `a`, `b`, `f(a)` ou `f(b)` forem inválidos ou resultarem em infinito/NaN.
+        RuntimeError: Se não convergir.
 
     Returns:
         float: Aproximação da raiz obtida pelo método da secante.
@@ -280,6 +286,7 @@ def raiz(f: Callable[..., object],
          tol: float = 1e-6, 
          method: str = "bissecao", 
          max_iter: int = 100, 
+         aprox: int = 4,
          plot: bool = True
     ) -> float:
     """
@@ -298,6 +305,7 @@ def raiz(f: Callable[..., object],
         tol (float, optional): Tolerância para os métodos. Por padrão 1e-6.
         method (str, optional): Método a ser utilizado: "bissecao", "secante" ou "newton". Por padrão "bissecao".
         max_iter (int, optional): Número máximo de iterações. Padrão: 100.
+        aprox (int, optional): Número de casas decimais para arredondamento do resultado. Padrão: 4.
         plot (bool, optional): Se True, exibe gráficos. Padrão: True.
 
     Raises:
@@ -309,8 +317,8 @@ def raiz(f: Callable[..., object],
     if method not in ("bissecao", "secante", "newton"):
         raise ValueError("Método inválido.")
     if method == "bissecao":
-        return bissecao(f, a, b, tol, max_iter, plot)
+        return round(bissecao(f, a, b, tol, max_iter, plot), aprox) # type: ignore
     elif method == "secante":
-        return secante(f, a, b, tol, max_iter, plot)
+        return round(secante(f, a, b, tol, max_iter, plot), aprox) # type: ignore
     elif method == "newton":
-        return newton(f, x0, tol, max_iter, plot)
+        return round(newton(f, x0, tol, max_iter, plot), aprox) # type: ignore
