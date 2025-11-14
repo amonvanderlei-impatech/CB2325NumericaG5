@@ -1,3 +1,4 @@
+import math
 from CB2325NumericaG5.graficos_aproximacao import grafico_ajuste_linear, grafico_ajuste_polinomial 
 
 def media(dado: list) -> float:
@@ -8,13 +9,19 @@ def media(dado: list) -> float:
 
     Raises:
         ValueError: A lista está vazia.    
-
+        ValueError: A lista não é composta por números.
+        
     Returns:
         float: A média aritmética dos dados fornecidos.
     """    
     if len(dado) == 0:
         raise ValueError("A lista está vazia.")
 
+    for i in dado:
+        if not isinstance(i, (int, float)) or math.isnan(i) or math.isinf(i):
+            raise ValueError("Os elementos não se tratam de números, logo não há como efetuar sua média.")
+    
+    
     soma = sum(dado)
 
     return float(soma/(len(dado))) #deixado float explícito aqui - não era necessário, mas fica mais claro
@@ -177,8 +184,14 @@ def aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int, mos
     Returns:
         list: Lista dos coeficientes em ordem crescente de grau.
     """    
+    
+    suporte = set()
+    for i in lista_de_coordenadas:
+        suporte.add(i)
+    lista_de_coordenadas = [i for i in suporte]
+    
     quantidade_de_pontos = len(lista_de_coordenadas)
-
+    
     if quantidade_de_pontos < grau_do_polinomio+1: #Condição necessária para que um polinômio seja encontrado.
         raise KeyError("A quantidade de dados deve ser maior ou igual ao grau do polinômio desejado.")
     #(
