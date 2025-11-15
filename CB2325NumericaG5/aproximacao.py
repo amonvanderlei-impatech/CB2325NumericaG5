@@ -252,13 +252,19 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
     k = str()
     a = aproximacao_polinomial(lista_de_coordenadas,grau_do_polinomio, False, False) #não mostrar o gráfico e o R² duas vezes
 
+    # percorre dos coeficientes de maior grau para o menor
     for i in range(len(a)):
-        if a[len(a)-1-i] > 0:
-            k+=f"({a[len(a)-1-i]:.3})x^{len(a)-i-1}"
-        elif a[len(a)-1-i] == 0:
+        coef = a[len(a) - 1 - i]
+        grau = len(a) - 1 - i
+
+        # pula coeficiente zero
+        if coef == 0:
             continue
-        else:
-            k+=f" + ({a[len(a)-1-i]:.3})x^{len(a)-i-1} "
 
+        # se não é o primeiro termo, adiciona " + " antes
+        if k != "":
+            k += " + "
+
+        # adiciona o termo no formato antigo
+        k += f"({coef:.3})x^{grau}"
     return k
-
