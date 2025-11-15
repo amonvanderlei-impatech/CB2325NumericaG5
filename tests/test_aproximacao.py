@@ -15,7 +15,7 @@ from CB2325NumericaG5.aproximacao import (
     txt_aproximacao_polinomial,
     grafico_ajuste_linear,
     grafico_ajuste_polinomial,
-    media,
+    _media,
     regressao_linear,
     resolvedor_de_sistemas
 )
@@ -152,7 +152,7 @@ class TestGraficoAjusteLinear:
         ]
     )
 def test_media_valida(lista, valor_esperado):
-    assert media(lista) == valor_esperado
+    assert _media(lista) == valor_esperado
 
 @pytest.mark.parametrize(
         "lista",
@@ -163,7 +163,7 @@ def test_media_valida(lista, valor_esperado):
     )
 def test_media_invalida(lista):
     with pytest.raises(ValueError):
-            media(lista)
+            _media(lista)
             
 @pytest.mark.parametrize(
         "lista, valor_esperado",
@@ -175,7 +175,7 @@ def test_media_invalida(lista):
         ]
     )
 def test_valores_extremos(lista, valor_esperado):
-    assert media(lista) == valor_esperado 
+    assert _media(lista) == valor_esperado 
 
 @pytest.mark.parametrize(
         "lista",
@@ -186,7 +186,7 @@ def test_valores_extremos(lista, valor_esperado):
     )
 def test_media_nan_inf(lista):
     with pytest.raises(ValueError):
-            media(lista) 
+            _media(lista) 
 
 @pytest.mark.parametrize(
         "valores_x, valores_y, beta_esperado, alpha_esperado",

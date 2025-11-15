@@ -1,7 +1,7 @@
 import math
 from CB2325NumericaG5.graficos_aproximacao import grafico_ajuste_linear, grafico_ajuste_polinomial 
 
-def media(dado: list) -> float:
+def _media(dado: list) -> float:
     """Esta função retorna a média dos elementos da lista dada.
 
     Args:
@@ -42,7 +42,7 @@ def coeficiente_determinacao(valores_y:list, valores_y_ajustados:list) -> float:
     if len(valores_y) != len(valores_y_ajustados):
         raise ValueError("As listas de valores_y e valores_y_ajustados devem ter o mesmo tamanho.")
 
-    y_medio = media(valores_y)
+    y_medio = _media(valores_y)
     soma_erros_quadrados = sum((y - valores_y_ajustados[i]) ** 2 for i, y in enumerate(valores_y))
     soma_total_variacao = sum((y - y_medio) ** 2 for y in valores_y)
 
@@ -71,15 +71,15 @@ def regressao_linear(valores_x:list, valores_y:list, mostrar_grafico: bool = Tru
     if len(valores_x) != len(valores_y):
         raise ValueError("A quantidade de abcissas deve ser igual à de ordenadas.")
 
-    den_beta_chapeu =  -len(valores_x)*(media(valores_x)*media(valores_x))
-    num_beta_chapeu =  -len(valores_x)*media(valores_x)*media(valores_y)
+    den_beta_chapeu =  -len(valores_x)*(_media(valores_x)*_media(valores_x))
+    num_beta_chapeu =  -len(valores_x)*_media(valores_x)*_media(valores_y)
 
     for k in range(len(valores_x)):
         den_beta_chapeu += valores_x[k]*valores_x[k]
         num_beta_chapeu += valores_x[k]*valores_y[k]
     
     beta_chapeu = num_beta_chapeu/den_beta_chapeu
-    alpha_chapeu = media(valores_y) - beta_chapeu*media(valores_x)
+    alpha_chapeu = _media(valores_y) - beta_chapeu*_media(valores_x)
     r_quadrado = coeficiente_determinacao(valores_y,[beta_chapeu*x + alpha_chapeu for x in valores_x])
 
     if mostrar_grafico == True:
