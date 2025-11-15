@@ -104,7 +104,7 @@ class TestTxtAproximacaoPolinomial:
     def test_contem_expoentes(self):
         """Verifica se aparecem expoentes no texto."""
         resultado = txt_aproximacao_polinomial([(0, 1), (1, 3), (2, 5)], 1)
-        assert "x^1" in resultado or "x^0" in resultado, "O texto deve conter expoentes"
+        assert "x" in resultado, "O texto deve conter expoentes"
 
     def test_pula_coeficiente_zero(self):
         """Verifica se coeficientes iguais a zero são ignorados no texto."""
@@ -119,7 +119,7 @@ class TestTxtAproximacaoPolinomial:
     def test_valor_textual_correspondente(self):
         """Verifica se há coeficientes numéricos aproximados no texto."""
         resultado = txt_aproximacao_polinomial([(0, 1), (1, 3), (2, 5)], 1)
-        assert "(2" in resultado or "(1" in resultado, "Coeficientes esperados não aparecem no texto"
+        assert "2" in resultado, "Coeficientes esperados não aparecem no texto"
         
 class TestGraficoAjustePolinomial:
     def teste_grafico_ajuste_polinomial(self):

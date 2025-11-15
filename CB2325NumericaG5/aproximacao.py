@@ -258,13 +258,27 @@ def txt_aproximacao_polinomial(lista_de_coordenadas:list, grau_do_polinomio:int)
         grau = len(a) - 1 - i
 
         # pula coeficiente zero
-        if coef == 0:
+        if math.isclose(abs(coef), 0, abs_tol=1e-11):
             continue
 
-        # se não é o primeiro termo, adiciona " + " antes
-        if k != "":
-            k += " + "
+        if coef > 0:
+            # se não é o primeiro termo, adiciona sinal
+            if k != "":
+                k += " + "
+        else:
+            k += " - "
 
-        # adiciona o termo no formato antigo
-        k += f"({coef:.3})x^{grau}"
-    return k
+        if grau == 0:
+            k += f"{abs(coef):.3}"
+        elif grau == 1:
+            if math.isclose(abs(coef), 1, abs_tol=1e-5):
+                k += f"x"
+            else:
+                k += f"{abs(coef):.3}x"
+        else:
+            if math.isclose(abs(coef), 1, abs_tol=1e-5):
+                k += f"x^{grau}"
+            else:
+                k += f"{abs(coef):.3}x^{grau}"
+        
+    return k.strip() or "0"
