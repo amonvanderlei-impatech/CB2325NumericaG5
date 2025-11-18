@@ -76,11 +76,11 @@ O pacote requer as seguintes bibliotecas:
 O desenvolvimento deste módulo foi realizado por:
 
 - [Amon Vanderlei](https://github.com/amonvanderlei-impatech)
-- [André Oliveira](https://github.com/AndreFurriel)
-- [Carlos Santos](https://github.com/Cadueduedu)
-- [Davi Campos](https://github.com/davipestana-impatech)
+- [André Furriel](https://github.com/AndreFurriel)
+- [Carlos Machado](https://github.com/Cadueduedu)
+- [Davi Pestana](https://github.com/davipestana-impatech)
 - [Felipe Frohlich](https://github.com/papaidoceu2)
-- [Gabriel Dias](https://github.com/GabrielKrauss2025)
+- [Gabriel Krauss](https://github.com/GabrielKrauss2025)
 - [Lisandra Fagundes](https://github.com/lisandra21)
 - [Lucas Corazza](https://github.com/LucasCorazza2025)
 - [Lucas Oliveira](https://github.com/allucasoliveira-lab)
